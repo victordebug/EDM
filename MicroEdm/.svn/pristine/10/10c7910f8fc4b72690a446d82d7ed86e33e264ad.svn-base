@@ -1,0 +1,244 @@
+#include "app.h"
+#include "systick.h"
+#include "uart.h"
+#include "includes.h"
+#include "GPIO.h"
+#include "Timer.h"
+#include <stdio.h>
+#include <math.h>
+#include "fsmc.h"
+#include "eeprom_24lc16b.h"
+#include "voltage.h"
+#include "ADC.h" 
+#include "edm.h"
+#include "data_analy.h"
+#include "i2c.h"
+
+/*******************设置任务优先级*******************/
+#define MAIN_TASK_PRIO        2
+#define LED_TASK_PRIO         3
+#define MOTOR_FIND_ZERO_PRIO  4
+/************设置栈大小(单位 OS_STK ) ************/
+#define LED_TASK_STK_SIZE         0x50
+#define MAIN_TASK_STK_SIZE        0x0FFF
+#define MOTOR_FIND_ZERO_STK_SIZE  0x0FFF 
+
+static OS_STK led_task_stk[LED_TASK_STK_SIZE]; //定义栈
+static OS_STK main_task_stk[MAIN_TASK_STK_SIZE]; //定义栈
+static OS_STK motor_find_zero_task_stk[MOTOR_FIND_ZERO_STK_SIZE]; 
+
+U32 g_MS = 0;
+u16 system_state = 0x00;
+
+
+void mark_system_is_run(u16 mark_comm)
+{
+	if ((mark_comm & SYSTEM_IS_RUN) == SYSTEM_IS_RUN)
+	{
+		system_state |= SYSTEM_IS_RUN;
+	}else 
+	{
+		system_state &= ~SYSTEM_IS_RUN;
+	}
+
+	if ((mark_comm & SYSTEM_IS_ERROR) == SYSTEM_IS_ERROR)
+	{
+		system_state |= SYSTEM_IS_ERROR;
+	}else 
+	{
+		system_state &= ~SYSTEM_IS_ERROR;
+	}
+
+	if ((mark_comm & SYSTEM_IS_WORK) == SYSTEM_IS_WORK)
+	{
+		system_state |= SYSTEM_IS_WORK;
+	}else 
+	{
+		system_state &= ~SYSTEM_IS_WORK;
+	}
+
+
+}
+
+
+void Task_Comm(void * pArg)
+{
+   INT8U ret = 0;
+	ret = OSTaskCreate(Task_Led,(void *)0,
+			&led_task_stk[LED_TASK_STK_SIZE-1], LED_TASK_PRIO);
+	if (ret != 0)
+	{
+		 printf("创建Task_Led任务失败\r\n");
+	}
+/*
+	ret = OSTaskCreate(Task_Motor_Find_zero,(void *)0,
+			&motor_find_zero_task_stk[MOTOR_FIND_ZERO_STK_SIZE-1], MOTOR_FIND_ZERO_PRIO);
+	if (ret != 0)
+	{
+		 printf("创建Task_Motor_Find_zero任务失败\r\n");
+	}
+*/
+	ret = OSTaskCreate(Task_Main,(void *)0,
+			&main_task_stk[MAIN_TASK_STK_SIZE-1], MAIN_TASK_PRIO);
+	if (ret != 0)
+	{
+		 printf("创建Task_Main任务失败\r\n");
+	}
+
+	Uart_Thread();
+}
+
+
+void Task_Motor_Find_zero(void * pArg)
+{
+	u16 data_sensor = 0;     //传感器的寄存器值
+	u16 i_flag = 0;
+	u16 j_motor_num = 0;
+	
+	Z_MOTOR_STOP_ANALYSIS z_stop_analy;
+	Z_MOTOR_MOVE_ANALYSIS m_z_motor_analy;
+	
+	while (1)
+	{
+		
+		//检测各个Z轴的零位传感器，如果不是最小位置，进行寻零
+
+		//for (j_motor_num=0; j_motor_num<1; j_motor_num++)
+		{
+			MemSet(m_z_motor_analy, 0, sizeof(m_z_motor_analy));
+			
+			//电机移动
+			m_z_motor_analy.ID = j_motor_num;
+			m_z_motor_analy.Dir = ANALY_Z_MOTOR_DIR_NEG;
+			m_z_motor_analy.Unit = 0;
+			m_z_motor_analy.A = 1;
+			m_z_motor_analy.V = 1;
+			z_motor_move(&m_z_motor_analy);
+
+
+			//检测零位
+			i_flag = 0;
+			while ((data_sensor & BIT_Z0_MIN) != BIT_Z0_MIN) 
+			{
+				data_sensor = fpga_read(ADDR_SENSOR);
+				
+				if (i_flag++ > MAX_TIME_FIND_ZERO)
+				{
+					mark_system_is_run(SYSTEM_IS_ERROR);
+					goto end;
+				}
+				OSTimeDlyHMSM(0,0,1,0);
+			}
+
+			//电机停止
+			z_stop_analy.ID = j_motor_num;
+			z_stop_analy.stop_mode = STOP_AT_ONCE;
+			z_motor_stop(&z_stop_analy);
+
+		}
+
+end:
+		OSTaskSuspend(MOTOR_FIND_ZERO_PRIO);
+		
+	}
+}
+
+static void i2c_delay_us(u32 time)
+{
+	u32 i=8*time;
+	 while(i--);
+}
+
+void Task_Main(void * pArg)
+{
+
+	Z_MOTOR_MOVETO_ANALYSIS z_motor_analy;
+	z_motor_analy.ID = 0;
+	z_motor_analy.Dir = ANALY_Z_MOTOR_DIR_NEG;
+	z_motor_analy.Unit = 0;
+	z_motor_analy.A    = 1;
+	z_motor_analy.V    = 5;
+	z_motor_analy.Pos  = 350;
+
+	z_motor_moveTo(&z_motor_analy);
+
+	
+	while (1)
+	{
+	  /*  printf("curMp:\r\n");
+		printf("MpL:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_MP_L));
+		printf("MpH:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_MP_H));
+
+		printf("curV:\r\n");
+		printf("VL:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_V_L));
+		printf("VH:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_V_H));
+
+		OSTimeDlyHMSM(0,0,1,0);*/
+
+		u8 txt_buf[] = {"nihao china"};
+		u8 buf_size = sizeof(txt_buf);
+		u8 m_read_buf[12] = {0};
+		u8 m_read_cBuf = 0;
+
+		/*EEPROM_24LC16B_WriteBuf(1 ,(u8 *)txt_buf, buf_size);
+		OSTimeDlyHMSM(0,0,1,0);
+		EEPROM_24LC16B_ReadBuf(1, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);*/
+
+
+		EEPROM_24LC16B_WriteByte(0x30, 0xFF);
+		OSTimeDlyHMSM(0,0,1,0);
+
+		m_read_cBuf = EEPROM_24LC16B_ReadByte(0x30);
+		printf("read--->0x%0x\r\n", m_read_cBuf);
+		OSTimeDlyHMSM(0,0,1,0);
+		
+
+	}
+}
+
+void Task_Led(void * pArg)
+{
+	
+	while (1)
+	{
+
+		//如果检测到步进电机在运动，设置系统工作状态
+		if((fpga_read(ADDR_Z0_MOTOR_STATUS)&0x1 == 1) || (fpga_read(ADDR_Z1_MOTOR_STATUS)&0x1 == 1) ||
+			(fpga_read(ADDR_Z2_MOTOR_STATUS)&0x1 == 1) || (fpga_read(ADDR_Z3_MOTOR_STATUS)&0x1 == 1))
+		{
+			system_state |= SYSTEM_IS_WORK;
+		}else
+		{
+			system_state &= ~SYSTEM_IS_WORK;;
+		}
+
+
+		
+		if (system_state & SYSTEM_IS_RUN)
+		{
+			GPIO_SetBits(GPIOD,PD12_LED_ERROR);
+			
+			OSTimeDlyHMSM(0,0,0,100);
+			if (system_state & SYSTEM_IS_WORK)  GPIO_ResetBits(GPIOD,PD13_LED_WORK);
+			GPIO_ResetBits(GPIOD,PD11_LED_RUN);
+			OSTimeDlyHMSM(0,0,0,100);
+			if (system_state & SYSTEM_IS_WORK) GPIO_SetBits(GPIOD,PD13_LED_WORK);
+			GPIO_SetBits(GPIOD,PD11_LED_RUN);
+
+		}else if (system_state & SYSTEM_IS_ERROR)
+		{
+			GPIO_SetBits(GPIOD,PD11_LED_RUN);
+			GPIO_SetBits(GPIOD,PD13_LED_WORK);
+			
+			OSTimeDlyHMSM(0,0,0,100);
+			GPIO_ResetBits(GPIOD,PD12_LED_ERROR);
+			GPIO_ResetBits(GPIOG,PG4_BEEP);
+			OSTimeDlyHMSM(0,0,0,100);
+			GPIO_SetBits(GPIOD,PD12_LED_ERROR);
+			GPIO_SetBits(GPIOG,PG4_BEEP);
+		}
+
+	}
+}
+

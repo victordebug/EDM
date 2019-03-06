@@ -1,0 +1,107 @@
+#include "Command.h"
+#include "Frame.h"
+#include "cmd.h"
+#include "ADC.h"
+#include "CMD_GetStateEx.h"
+#include "data_analy.h"
+#include "voltage.h"
+#include "edm.h"
+#include "motor.h"
+#include "eeprom_24lc16b.h"
+#include "beep.h"
+
+u16  g_ushReceiveBuffer[MAX_LENGTH_R] ; 
+u16  g_ushSentBuffer[MAX_LENGTH_S]; 
+u16* g_pReceiveBuffer = (u16*)g_ushReceiveBuffer;
+u16* g_pSentBuffer = (u16*)g_ushSentBuffer;
+u8* g_pSentBufferU8 = (u8*)g_ushSentBuffer;
+
+u16  g_ushReceiveNum; 
+u16  g_ushSentNum;
+
+
+U16 ParseCmd1()
+{
+	U16* pPara = (U16*)UART_R_DATA_P;
+	if(UART_R_LENGTH != CMD_CMD1_BYTE)
+		return ECMD_LENGTH;
+	return NOERROR;
+}
+
+U16 ParseCmd2()
+{
+	U16* pPara = (U16*)UART_R_DATA_P;
+	if(UART_R_LENGTH != CMD_CMD2_BYTE)
+		return ECMD_LENGTH;
+	return NOERROR;
+}
+
+u16 CommandParse(void)                  //command parse
+{
+	u16 retVal = BAD_COMMAND;
+	switch(UART_R_CMD)
+	{	
+		case CMD_GETSTATE_EX:
+			retVal = ParseGetState_Ex();
+			break;
+//		case CMD_FUNCTION_EX:
+//			retVal = ParseFunction_Ex();
+//			break;	
+		case CMD_DC_MOTOR_MOVE:
+			retVal = DC_motor_move();
+			break;
+		case CMD_DC_MOTOR_STOP:
+			retVal = DC_motor_stop();
+			break;
+		case CMD_Z_MOTOR_EN:
+			retVal = z_motor_en();
+		case CMD_Z_MOTOR_MOVE:
+			retVal = z_motor_move();
+			break;
+		case CMD_Z_MOTOR_MOVETO:
+			retVal = z_motor_moveTo();
+			break;
+		case CMD_Z_MOTOR_FINDZERO:
+			retVal = z_motor_findZero();
+			break;
+		case CMD_Z_MOTOR_STOP:
+			retVal = z_motor_stop();
+			break;
+		case CMD_BEEP:
+			retVal = beep_ctrl();
+			break;
+		case CMD_EDM_SWITCH:
+			retVal = H_voltage_switch();
+			break;
+		case CMD_EDM_PWM_RUN:
+			retVal = edm_pwm();
+			break;
+		case CMD_EDM_PWM_STOP:
+			retVal = edm_pwm_stop();
+			break;
+		case CMD_EDM_RC_RUN:
+			retVal = edm_rc();
+			break;
+		case CMD_EDM_RC_STOP:
+			retVal = edm_rc_stop();
+			break;
+		case CMD_UPDATE_CONFIG:
+			retVal = update_config();
+			break;
+		default:
+			break;
+	}
+	return retVal;
+}
+
+
+
+
+
+
+
+
+
+
+
+

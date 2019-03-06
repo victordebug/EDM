@@ -1,0 +1,196 @@
+#ifndef FSMC_H_20190115
+#define FSMC_H_20190115
+
+#include "stm32f10x.h"
+#include "edm.h"
+#include "motor.h"
+/*********************************************************************
+* 版权所有 (C)2018, 杭州数腾科技有限公司
+* 
+* 内容摘要：主要包含FSMC的初始化和通信接口
+* 当前版本：
+* 作 者：henry
+* 完成日期：2019年 月 日
+*
+* 修改记录1：修改历史记录，包括修改日期、修改者及修改内容
+* 修改日期：
+* 版 本 号：
+* 修 改 人：
+* 修改内容：
+**********************************************************************/
+
+/*寄存器地址列表*/
+#define ADDR_VERSION			0x0000	//版本信息
+
+#define ADDR_SENSOR				0x0001	//传感器寄存器地址
+
+/*RC放电寄存器地址*/
+#define ADDR_DISCHARGE_COMMAND	0x0003
+#define ADDR_DISCHARGE_STATUS   0x0004
+#define ADDR_SHORT_THRESHOLD0	0x0005
+#define ADDR_SHORT_THRESHOLD1	0x0006
+#define ADDR_SHORT_THRESHOLD2	0x0007
+#define ADDR_SHORT_THRESHOLD3	0x0008
+#define ADDR_DISCHARGE_COUNT0   0x0009
+#define ADDR_DISCHARGE_COUNT1   0x000a
+#define ADDR_DISCHARGE_COUNT2   0x000b
+#define ADDR_DISCHARGE_COUNT3   0x000c
+#define ADDR_PULSESET			0x000d
+
+#define ADDR_PULSE_COMMAND		0x0010
+#define ADDR_PULSE_THRESHOLD0   0x0011
+#define ADDR_PULSE_THRESHOLD1   0x0012
+#define ADDR_PULSE_THRESHOLD2   0x0013
+#define ADDR_PULSE_THRESHOLD3   0x0014
+#define ADDR_PULSE_STATUS		0x0015
+
+/*旋转电机寄存器地址*/
+#define ADDR_COMMAND_DCMOTION   0x001b
+#define ADDR_Z0_DCMOTOR_K		0x001c
+#define ADDR_Z1_DCMOTOR_K		0x001d
+#define ADDR_Z2_DCMOTOR_K		0x001e
+#define ADDR_Z3_DCMOTOR_K		0x001f
+
+/*步进电机寄存器地址*/
+#define ADDR_Z0_MOTOR_CTRL      0x0020
+#define ADDR_Z0_MOTOR_DIAG		0x0021
+#define ADDR_Z0_SET_ACC			0x0022
+#define ADDR_Z0_SET_V_L			0x0023
+#define ADDR_Z0_SET_V_H			0x0024
+#define ADDR_Z0_MIN_V_L			0x0025
+#define ADDR_Z0_MIN_V_H			0x0026
+#define ADDR_Z0_SUB_MP_L		0x0027
+#define ADDR_Z0_SUB_MP_H		0x0028
+#define ADDR_Z0_END_MAP_L		0x0029
+#define ADDR_Z0_END_MAP_H		0x002a
+#define ADDR_Z0_MOTOR_STATUS	0x002b
+#define ADDR_Z0_CUR_MP_L		0x002c
+#define ADDR_Z0_CUR_MP_H		0x002d
+#define ADDR_Z0_CUR_EP_L		0x002e
+#define ADDR_Z0_CUR_EP_H		0x002f
+#define ADDR_Z0_CUR_V_L			0x0030
+#define ADDR_Z0_CUR_V_H			0x0031
+
+#define ADDR_Z1_MOTOR_CTRL      0x0050
+#define ADDR_Z1_MOTOR_DIAG		0x0051
+#define ADDR_Z1_SET_ACC			0x0052
+#define ADDR_Z1_SET_V_L			0x0053
+#define ADDR_Z1_SET_V_H			0x0054
+#define ADDR_Z1_MIN_V_L			0x0055
+#define ADDR_Z1_MIN_V_H			0x0056
+#define ADDR_Z1_SUB_MP_L		0x0057
+#define ADDR_Z1_SUB_MP_H		0x0058
+#define ADDR_Z1_END_MAP_L		0x0059
+#define ADDR_Z1_END_MAP_H		0x005a
+#define ADDR_Z1_MOTOR_STATUS	0x005b
+#define ADDR_Z1_CUR_MP_L		0x005c
+#define ADDR_Z1_CUR_MP_H		0x005d
+#define ADDR_Z1_CUR_EP_L		0x005e
+#define ADDR_Z1_CUR_EP_H		0x005f
+#define ADDR_Z1_CUR_V_L			0x0060
+#define ADDR_Z1_CUR_V_H			0x0061
+
+#define ADDR_Z2_MOTOR_CTRL      0x0080
+#define ADDR_Z2_MOTOR_DIAG		0x0081
+#define ADDR_Z2_SET_ACC			0x0082
+#define ADDR_Z2_SET_V_L			0x0083
+#define ADDR_Z2_SET_V_H			0x0084
+#define ADDR_Z2_MIN_V_L			0x0085
+#define ADDR_Z2_MIN_V_H			0x0086
+#define ADDR_Z2_SUB_MP_L		0x0087
+#define ADDR_Z2_SUB_MP_H		0x0088
+#define ADDR_Z2_END_MAP_L		0x0089
+#define ADDR_Z2_END_MAP_H		0x008a
+#define ADDR_Z2_MOTOR_STATUS	0x008b
+#define ADDR_Z2_CUR_MP_L		0x008c
+#define ADDR_Z2_CUR_MP_H		0x008d
+#define ADDR_Z2_CUR_EP_L		0x008e
+#define ADDR_Z2_CUR_EP_H		0x008f
+#define ADDR_Z2_CUR_V_L			0x0090
+#define ADDR_Z2_CUR_V_H			0x0091
+
+#define ADDR_Z3_MOTOR_CTRL      0x00b0
+#define ADDR_Z3_MOTOR_DIAG		0x00b1
+#define ADDR_Z3_SET_ACC			0x00b2
+#define ADDR_Z3_SET_V_L			0x00b3
+#define ADDR_Z3_SET_V_H			0x00b4
+#define ADDR_Z3_MIN_V_L			0x00b5
+#define ADDR_Z3_MIN_V_H			0x00b6
+#define ADDR_Z3_SUB_MP_L		0x00b7
+#define ADDR_Z3_SUB_MP_H		0x00b8
+#define ADDR_Z3_END_MAP_L		0x00b9
+#define ADDR_Z3_END_MAP_H		0x00ba
+#define ADDR_Z3_MOTOR_STATUS	0x00bb
+#define ADDR_Z3_CUR_MP_L		0x00bc
+#define ADDR_Z3_CUR_MP_H		0x00bd
+#define ADDR_Z3_CUR_EP_L		0x00be
+#define ADDR_Z3_CUR_EP_H		0x00bf
+#define ADDR_Z3_CUR_V_L			0x00c0
+#define ADDR_Z3_CUR_V_H			0x00c1
+
+
+/*脉冲放电寄存器地址*/
+#define ADDR_PWM_COMMAND		0x00f0
+
+#define ADDR_PWM0_PERID			0x00f1
+#define ADDR_PWM0_DUTY			0x00f2
+#define ADDR_PWM0_DEAD_ZONE		0x00f3
+
+#define ADDR_PWM1_PERID			0x00f4
+#define ADDR_PWM1_DUTY			0x00f5
+#define ADDR_PWM1_DEAD_ZONE		0x00f6
+
+#define ADDR_PWM2_PERID			0x00f7
+#define ADDR_PWM2_DUTY			0x00f8
+#define ADDR_PWM2_DEAD_ZONE		0x00f9
+
+#define ADDR_PWM3_PERID			0x00fa
+#define ADDR_PWM3_DUTY			0x00fb
+#define ADDR_PWM3_DEAD_ZONE		0x00fc
+
+
+#define fpga_write(offset,data)	*((volatile u16 *)(0x60000000 + (offset << 1)))=data
+#define fpga_read(offset)	    *((volatile u16 *)(0x60000000 + (offset << 1)))
+
+
+
+
+void FPGA_Init(void);
+
+/*
+void FSMC_FPGA_WriteByte(u16 WriteAddr,u16 data);
+
+u16 FSMC_FPGA_ReadByte(u16 ReadAddr);
+*/
+
+u16 FPGA_VERSION_GetStateEx(u16 pid, u16 *pState);	//获取版本信息
+
+u16 SENSOR_GetStateEx(u16 pid, u16 *pState);  	//获取传感器信息
+
+void FPGA_dcMotor_set(DC_MOTOR *dc_motor);
+
+void FPGA_zmotor_set(Z_MOTOR *z_motor);
+
+u16 ZMOTOR_STAT_GetStateEx(u16 pid, u16 *pState);
+
+
+
+
+
+/*EDM*/
+u16 RC_STAT_GetStateEx(u16 pid, u16 *pState);
+
+void FPGA_EDM_RC(RC_EDM *edm_rc);
+
+void FPGA_EDM_PWM(PWD_EDM *edm_pwm);
+
+u16 PWM_COUNT_GetStateEx(u16 pid, u16 *state);
+
+
+
+
+
+#endif
+
+
+

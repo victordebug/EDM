@@ -1,0 +1,51 @@
+#include <stdint.h>
+#include <stdio.h>
+#include "includes.h"
+#include "systick.h"
+#include "uart.h"
+#include "GPIO.h"
+#include "SystemState.h"
+#include "led.h"
+#include "fsmc.h"
+#include "eeprom_24lc16b.h"
+#include "voltage.h"
+#include "ADC.h"
+#include "config.h"
+
+/*******************设置任务优先级*******************/
+#define STARTUP_TASK_PRIO 1
+
+/************设置栈大小(单位 OS_STK ) ************/
+#define STARTUP_TASK_STK_SIZE  0x400
+static OS_STK startup_task_stk[STARTUP_TASK_STK_SIZE]; //定义栈
+
+void config_init(void);
+
+int main(void)
+{
+	config_init();
+	OSInit();
+
+	mark_system_is_run(SYSTEM_IS_RUN);
+	
+	OSTaskCreate(Task_Comm,(void *)0,
+		&startup_task_stk[STARTUP_TASK_STK_SIZE-1], STARTUP_TASK_PRIO);
+	OSStart();
+	return 0;
+}
+
+
+void config_init(void)
+{
+	BSP_init();
+	UartConfigation();
+	SYS_Init();
+	led_init();				//指示灯初始化
+	FSMC_Init(); 			//FSMC通信
+	EEPROM_24LC16B_Init();  //EEPROM初始化
+	voltage_init();         //电压模块初始化
+
+	
+	motor_init();           //电机初始化
+	hv_enable(HV_OFF);      //关闭高压
+}

@@ -1,0 +1,207 @@
+#ifndef _GPIO_H
+#define _GPIO_H
+
+#include "stm32f10x.h"
+
+ 
+//0,不支持ucos
+//1,支持ucos
+#define SYSTEM_SUPPORT_OS		0		//定义系统文件夹是否支持UCOS
+																	    
+	 
+//位带操作,实现51类似的GPIO控制功能
+//具体实现思想,参考<<CM3权威指南>>第五章(87页~92页).
+//IO口操作宏定义
+#define BITBAND(addr, bitnum) ((addr & 0xF0000000)+0x2000000+((addr &0xFFFFF)<<5)+(bitnum<<2)) 
+#define MEM_ADDR(addr)  *((volatile unsigned long  *)(addr)) 
+#define BIT_ADDR(addr, bitnum)   MEM_ADDR(BITBAND(addr, bitnum)) 
+//IO口地址映射
+#define GPIOA_ODR_Addr    (GPIOA_BASE+12) //0x4001080C 
+#define GPIOB_ODR_Addr    (GPIOB_BASE+12) //0x40010C0C 
+#define GPIOC_ODR_Addr    (GPIOC_BASE+12) //0x4001100C 
+#define GPIOD_ODR_Addr    (GPIOD_BASE+12) //0x4001140C 
+#define GPIOE_ODR_Addr    (GPIOE_BASE+12) //0x4001180C 
+#define GPIOF_ODR_Addr    (GPIOF_BASE+12) //0x40011A0C    
+#define GPIOG_ODR_Addr    (GPIOG_BASE+12) //0x40011E0C    
+
+#define GPIOA_IDR_Addr    (GPIOA_BASE+8) //0x40010808 
+#define GPIOB_IDR_Addr    (GPIOB_BASE+8) //0x40010C08 
+#define GPIOC_IDR_Addr    (GPIOC_BASE+8) //0x40011008 
+#define GPIOD_IDR_Addr    (GPIOD_BASE+8) //0x40011408 
+#define GPIOE_IDR_Addr    (GPIOE_BASE+8) //0x40011808 
+#define GPIOF_IDR_Addr    (GPIOF_BASE+8) //0x40011A08 
+#define GPIOG_IDR_Addr    (GPIOG_BASE+8) //0x40011E08 
+ 
+//IO口操作,只对单一的IO口!
+//确保n的值小于16!
+#define PAout(n)   BIT_ADDR(GPIOA_ODR_Addr,n)  //输出 
+#define PAin(n)    BIT_ADDR(GPIOA_IDR_Addr,n)  //输入 
+
+#define PBout(n)   BIT_ADDR(GPIOB_ODR_Addr,n)  //输出 
+#define PBin(n)    BIT_ADDR(GPIOB_IDR_Addr,n)  //输入 
+
+#define PCout(n)   BIT_ADDR(GPIOC_ODR_Addr,n)  //输出 
+#define PCin(n)    BIT_ADDR(GPIOC_IDR_Addr,n)  //输入 
+
+#define PDout(n)   BIT_ADDR(GPIOD_ODR_Addr,n)  //输出 
+#define PDin(n)    BIT_ADDR(GPIOD_IDR_Addr,n)  //输入 
+
+#define PEout(n)   BIT_ADDR(GPIOE_ODR_Addr,n)  //输出 
+#define PEin(n)    BIT_ADDR(GPIOE_IDR_Addr,n)  //输入
+
+#define PFout(n)   BIT_ADDR(GPIOF_ODR_Addr,n)  //输出 
+#define PFin(n)    BIT_ADDR(GPIOF_IDR_Addr,n)  //输入
+
+#define PGout(n)   BIT_ADDR(GPIOG_ODR_Addr,n)  //输出 
+#define PGin(n)    BIT_ADDR(GPIOG_IDR_Addr,n)  //输入
+
+
+
+
+/* define GPIO define in PA */
+
+#define PA0_ADC_LVHMONITOR							GPIO_Pin_0
+#define PA1_ADC_MOTOR								GPIO_Pin_1
+#define PA2_Revd									GPIO_Pin_2
+#define PA3_Revd									GPIO_Pin_3
+#define PA4_EEPROM_SDA_READ	     					GPIO_Pin_4
+#define PA5_EEPROM_SDA_WRITE						GPIO_Pin_5
+#define PA6_EEPROM_SCLK				  				GPIO_Pin_6
+#define PA7_Revd									GPIO_Pin_7
+#define PA8_RS485_DIR								GPIO_Pin_8
+#define PA9_RS485_TX								GPIO_Pin_9
+#define PA10_RS485_RX								GPIO_Pin_10
+#define PA11_USB_DM									GPIO_Pin_11
+#define PA12_USB_DP									GPIO_Pin_12
+#define PA13_JTAG_JTDO								GPIO_Pin_13
+#define PA14_JTAG_JTCK								GPIO_Pin_14
+#define PA15_JTAG_JTDI								GPIO_Pin_15
+
+/* define GPIO define in PB */
+
+#define PB0_Revd									GPIO_Pin_0
+#define PB1_Revd									GPIO_Pin_1
+#define PB2_Revd									GPIO_Pin_2
+#define PB3_JTAG_JTDO								GPIO_Pin_3
+#define PB4_JTAG_JTRST								GPIO_Pin_4
+#define PB5_Revd									GPIO_Pin_5
+#define PB6_Revd									GPIO_Pin_6
+#define PB7_FPGA_NADV								GPIO_Pin_7
+#define PB8_Revd									GPIO_Pin_8
+#define PB9_Revd									GPIO_Pin_9
+#define PB10_ECAT_INT								GPIO_Pin_10
+#define PB11_ECAT_MDIO								GPIO_Pin_11
+#define PB12_ECAT_RXD3								GPIO_Pin_12
+#define PB13_ECAT_RXD2								GPIO_Pin_13
+#define PB14_ECAT_RXD1								GPIO_Pin_14
+#define PB15_ECAT_RXD0								GPIO_Pin_15
+
+/* define GPIO define in PC */
+
+#define PC0_Revd									GPIO_Pin_0
+#define PC1_HV_ENA									GPIO_Pin_1
+#define PC2_HV_CLR									GPIO_Pin_2
+#define PC3_HV_LD									GPIO_Pin_3
+#define PC4_Revd									GPIO_Pin_4
+#define PC5_Revd									GPIO_Pin_5
+#define PC6_ECAT_TX_CLK								GPIO_Pin_6
+#define PC7_ECAT_TX_CTL								GPIO_Pin_7
+#define PC8_ECAT_RX_CLK								GPIO_Pin_8
+#define PC9_ECAT_RX_CTL								GPIO_Pin_9
+#define PC10_Revd									GPIO_Pin_10
+#define PC11_Revd									GPIO_Pin_11
+#define PC12_Revd									GPIO_Pin_12
+#define PC13_HV_SDI									GPIO_Pin_13
+#define PC14_HV_CLK									GPIO_Pin_14
+#define PC15_HV_CS									GPIO_Pin_15
+
+/* define GPIO define in PD */
+
+#define PD0_FSMC_DATA2								GPIO_Pin_0
+#define PD1_FSMC_DATA3								GPIO_Pin_1
+#define PD2_Revd									GPIO_Pin_2
+#define PD3_Revd									GPIO_Pin_3
+#define PD4_FPGA_NOE								GPIO_Pin_4
+#define PD5_FPGA_NWE								GPIO_Pin_5
+#define PD6_Revd									GPIO_Pin_6
+#define PD7_FPGA_NE									GPIO_Pin_7
+#define PD8_FSMC_DATA13								GPIO_Pin_8
+#define PD9_FSMC_DATA14								GPIO_Pin_9
+#define PD10_FSMC_DATA15							GPIO_Pin_10
+#define PD11_LED_RUN								GPIO_Pin_11
+#define PD12_LED_ERROR								GPIO_Pin_12
+#define PD13_LED_WORK								GPIO_Pin_13
+#define PD14_FSMC_DATA0								GPIO_Pin_14
+#define PD15_FSMC_DATA1								GPIO_Pin_15
+
+
+
+/* define GPIO define in PE */
+
+#define PE0_Revd									GPIO_Pin_0
+#define PE1_Revd									GPIO_Pin_1
+#define PE2_Revd									GPIO_Pin_2
+#define PE3_Revd									GPIO_Pin_3
+#define PE4_Revd									GPIO_Pin_4
+#define PE5_Revd									GPIO_Pin_5
+#define PE6_Revd									GPIO_Pin_6
+#define PE7_FSMC_DATA4								GPIO_Pin_7
+#define PE8_FSMC_DATA5								GPIO_Pin_8
+#define PE9_FSMC_DATA6								GPIO_Pin_9
+#define PE10_FSMC_DATA7								GPIO_Pin_10
+#define PE11_FSMC_DATA8								GPIO_Pin_11
+#define PE12_FSMC_DATA9								GPIO_Pin_12
+#define PE13_FSMC_DATA10							GPIO_Pin_13
+#define PE14_FSMC_DATA11							GPIO_Pin_14
+#define PE15_FSMC_DATA12							GPIO_Pin_15
+
+
+
+/* define GPIO define in PF */
+
+#define PF0_FSMC_ADDR0								GPIO_Pin_0
+#define PF1_FSMC_ADDR1								GPIO_Pin_1
+#define PF2_FSMC_ADDR2								GPIO_Pin_2
+#define PF3_FSMC_ADDR3								GPIO_Pin_3
+#define PF4_FSMC_ADDR4								GPIO_Pin_4
+#define PF5_FSMC_ADDR5								GPIO_Pin_5
+#define PF6_Revd									GPIO_Pin_6
+#define PF7_Revd									GPIO_Pin_7
+#define PF8_Revd									GPIO_Pin_8
+#define PF9_Revd									GPIO_Pin_9
+#define PF10_Revd									GPIO_Pin_10
+#define PF11_ECAT_MDC								GPIO_Pin_11
+#define PF12_FSMC_ADDR6								GPIO_Pin_12
+#define PF13_FSMC_ADDR7								GPIO_Pin_13
+#define PF14_FSMC_ADDR8								GPIO_Pin_14
+#define PF15_FSMC_ADDR9								GPIO_Pin_15
+
+
+
+
+/* define GPIO define in PG */
+
+#define PG0_FSMC_ADDR10								GPIO_Pin_0
+#define PG1_FSMC_ADDR11								GPIO_Pin_1
+#define PG2_FSMC_ADDR12								GPIO_Pin_2
+#define PG3_FSMC_ADDR13								GPIO_Pin_3
+#define PG4_BEEP									GPIO_Pin_4
+#define PG5_ECAT_TXD3								GPIO_Pin_5
+#define PG6_ECAT_TXD2								GPIO_Pin_6
+#define PG7_ECAT_TXD1								GPIO_Pin_7
+#define PG8_ECAT_TXD0								GPIO_Pin_8
+#define PG9_Revd									GPIO_Pin_9
+#define PG10_Revd									GPIO_Pin_10
+#define PG11_Revd									GPIO_Pin_11
+#define PG12_Revd									GPIO_Pin_12
+#define PG13_Revd									GPIO_Pin_13
+#define PG14_Revd									GPIO_Pin_14
+#define PG15_Revd									GPIO_Pin_15
+
+
+
+
+
+extern void GPIO_Define_Init(void);
+
+#endif /* _LED_H */

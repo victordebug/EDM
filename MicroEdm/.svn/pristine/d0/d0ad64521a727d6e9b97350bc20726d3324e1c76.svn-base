@@ -1,0 +1,296 @@
+#include "motor.h"
+#include "fsmc.h"
+#include "stdtypes.h"
+#include "data_analy.h"
+
+//步进电机本地定义
+ZSCAN_MOTOR *zscan_motor0 = NULL;
+ZSCAN_MOTOR *zscan_motor1 = NULL;
+ZSCAN_MOTOR *zscan_motor2 = NULL;
+ZSCAN_MOTOR *zscan_motor3 = NULL;
+
+//旋转电机本地定义
+DC_MOTOR *dc_motor0 = NULL;
+DC_MOTOR *dc_motor1 = NULL;
+DC_MOTOR *dc_motor2 = NULL;
+DC_MOTOR *dc_motor3 = NULL;
+
+
+u32 DC_motor_rotat2bit(u16 speed);	/*将转速转换成寄存器值*/
+u32 ZSCAN_MMpS2SVV(u32 dbMMpSS);
+u32 ZSCAN_MMpS2SV(u32 dbMMpS);
+u32 ZSCAN_MM2MP(u32 dbMM);
+u32 ZScan_CalcSubMP(U32 ulV, U32 ulA, U32 ulPos, u16 dir, u32 mp_cur);
+
+
+
+
+/*电机初始化*/
+u8 motor_init(void)
+{
+	//旋转电机的初始化
+
+	//Z轴电机的初始化
+
+	return 0;
+}
+
+
+//旋转电机移动
+u8 DC_motor_move(DC_MOTOR_ANALYSIS *motor_analy)
+{
+	u32 flag_speed = 0;
+	DC_MOTOR *dc_motor = NULL;
+	flag_speed = DC_motor_rotat2bit(motor_analy->speed_motor);
+
+	dc_motor->ID_motor = motor_analy->ID;
+	dc_motor->EN_motor = EN_MOTOR_ON;
+	dc_motor->speed_motor = flag_speed;
+	FPGA_dcMotor_set(dc_motor);
+
+	return 0;
+}
+
+
+
+//旋转电机停止移动
+u8 DC_motor_stop(u8 ID_motor)
+{
+	DC_MOTOR *dc_motor = NULL;
+
+	dc_motor->ID_motor = ID_motor;
+	dc_motor->EN_motor = EN_MOTOR_OFF;
+	dc_motor->speed_motor = 0;
+	FPGA_dcMotor_set(dc_motor);
+
+	return 0;
+
+}
+
+	
+//无目的地的移动模式
+//将数据换算成寄存器的数据
+u8 z_motor_move(Z_MOTOR_ANALYSIS *z_motor_analy)
+{
+	Z_MOTOR *z_motor = NULL;    //设置指针
+	u32 m_acc_speed = 0;   //加速度
+	u32 m_speed = 0;    //速度
+	u32 motor_crawl_speed = 0; //爬行速度
+
+	//数据转换
+	m_acc_speed = ZSCAN_MMpS2SVV(z_motor_analy->acc_motor);
+	m_speed = ZSCAN_MMpS2SV(z_motor_analy->speed_motor);
+	motor_crawl_speed = ZSCAN_MMpS2SV(MOTOR_CRAWL_SPEED);
+	
+	//启动位清零
+	z_motor->ID_motor = z_motor_analy->ID;
+	z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_START_MOVE;
+	FPGA_zmotor_set(z_motor);
+	
+	z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_SERVO_ENABLE;
+	z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_PULSE_ENABLE;
+	if (z_motor_analy->dir == ANALY_Z_MOTOR_DIR_POS)
+	{
+		z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_DIR;
+	}else if (z_motor_analy->dir == ANALY_Z_MOTOR_DIR_NEG)
+	{
+		z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_DIR;
+	}
+	z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_START_MOVE;
+	z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_STOP;
+	z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_SUB;
+
+	z_motor->acc_motor = (u16)(m_acc_speed & 0xffff);
+	z_motor->crawl_speed_L = (u16)motor_crawl_speed & 0xffff;
+	z_motor->crawl_speed_H = (u16)(motor_crawl_speed >> 16) & 0xff;
+	z_motor->speed_L = (u16)(m_speed & 0xffff);
+	z_motor->speed_H = (u16)(m_speed >> 16) & 0xff;
+
+	FPGA_zmotor_set(z_motor);		
+}
+
+//有目的地的移动模式
+u8 z_motor_moveTo(Z_MOTOR_ANALYSIS *z_motor_analy)
+{
+	Z_MOTOR *z_motor = NULL;    //设置变量
+	Z_MOTOR_STAT *z_stat_motor = NULL;  //状态变量
+	u32 m_acc_speed = 0;   //加速度
+	u32 m_speed = 0;    //速度
+	u32 m_location_targ = 0;   //目标位置
+	u32 map_cur = 0;   //当前位置
+	u32 m_s = 0;   //总距离
+	u32 m_s_mp = 0; //总距离（MP）
+	u32 m_location_sub = 0;  //减速位置
+	u32 motor_crawl_speed = 0; //爬行速度
+
+	//获取当前位置
+	FPGA_zmotor_stat(z_stat_motor); 
+	map_cur = z_stat_motor->location_cur_coder_L & 0xffff;
+	map_cur += (z_stat_motor->location_cur_coder_H << 16) & 0xff0000;
+
+	//数据转换
+	m_acc_speed = ZSCAN_MMpS2SVV(z_motor_analy->acc_motor);
+	m_speed = ZSCAN_MMpS2SV(z_motor_analy->speed_motor);
+	m_location_targ = ZSCAN_MM2MP(z_motor_analy->location_target);
+	motor_crawl_speed = ZSCAN_MMpS2SV(MOTOR_CRAWL_SPEED);
+	//启动位清零
+	z_motor->ID_motor = z_motor_analy->ID;
+	z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_START_MOVE;
+	FPGA_zmotor_set(z_motor);
+	
+	z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_SERVO_ENABLE;
+	z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_PULSE_ENABLE;
+	if (z_motor_analy->dir == ANALY_Z_MOTOR_DIR_POS)
+	{
+		z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_DIR;
+		m_s = z_motor_analy->location_target + map_cur;
+	}else if (z_motor_analy->dir == ANALY_Z_MOTOR_DIR_NEG)
+	{
+		z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_DIR;
+		m_s = map_cur - z_motor_analy->location_target;
+	}
+	m_s_mp = ZSCAN_MM2MP(m_s);
+	z_motor->motor_control.all_command |= BIT_Z_MOTOR_CTRL_START_MOVE;
+	z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_STOP;
+	z_motor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_SUB;
+
+	m_location_sub = ZScan_CalcSubMP(m_speed, m_acc_speed, m_s_mp, z_motor_analy->dir, map_cur); //计算出减速位置
+
+	z_motor->acc_motor = (u16)(m_acc_speed & 0xffff);
+	z_motor->crawl_speed_L = (u16)motor_crawl_speed & 0xffff;
+	z_motor->crawl_speed_H = (u16)(motor_crawl_speed >> 16) & 0xff;
+	z_motor->speed_L = (u16)(m_speed & 0xffff);
+	z_motor->speed_H = (u16)(m_speed >> 16) & 0xff;
+	z_motor->location_speedCut_L = m_location_sub & 0xffff;
+	z_motor->location_speedCut_H = (u16)(m_location_sub >> 16) & 0x3f;
+	z_motor->location_target_L = (u16)(m_location_targ & 0xffff);
+	z_motor->location_target_H = (u16)(m_location_targ >> 16) & 0x3f;
+
+	FPGA_zmotor_set(z_motor);	
+}
+
+
+/*步进电机停止*/
+/*
+	立即停止
+	减速停止
+*/
+u8 z_motor_stop(u8 ID_motor,  u8 stop_mode)
+{
+	Z_MOTOR *m_zMotor = NULL;
+
+	m_zMotor->ID_motor = ID_motor;
+	if (stop_mode == STOP_TO_ZERO_VALUE)  //减速停止
+	{
+		m_zMotor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_STOP;
+		m_zMotor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_SUB;
+		m_zMotor->speed_L = 0;
+		m_zMotor->speed_H = 0;
+	}else if (stop_mode == STOP_AT_ONCE)   //立即停止
+	{
+		m_zMotor->motor_diagnose.all_diag &= ~BIT_Z_MOTOR_DIGN_E_STOP;
+		FPGA_zmotor_set(m_zMotor);  //先将诊断寄存器的紧急停止位清零
+
+		m_zMotor->motor_diagnose.all_diag |= BIT_Z_MOTOR_DIGN_E_STOP;
+		m_zMotor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_SERVO_ENABLE;
+		m_zMotor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_PULSE_ENABLE;
+		m_zMotor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_STOP;
+		m_zMotor->motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_TRIGGER_SUB;
+		m_zMotor->speed_L = 0;
+		m_zMotor->speed_H = 0;
+	}
+
+	FPGA_zmotor_set(m_zMotor);
+}
+
+
+
+
+u32 DC_motor_rotat2bit(u16 speed)
+{
+	u32 flag_bit_speed = speed;
+	flag_bit_speed *= DC_MAX_BIT;
+	flag_bit_speed /= DC_MAX_SPEED;
+
+	return flag_bit_speed;
+}
+
+u32 ZSCAN_MM2MP(u32 dbMM)
+{
+	dbMM += 0.000001;
+	return (u32)(dbMM * ZSCAN_DEBUG_PARAM);
+}
+
+DB32 ZSCAN_MP2MM(S32 lMP)
+{
+	DB32 dbMP = (DB32)lMP;
+	return (DB32)(dbMP / ZSCAN_DEBUG_PARAM);
+}
+
+u32 ZSCAN_MMpS2SV(u32 dbMMpS)
+{
+	u32 q27SV;
+	DB32 dbRet = (ZSCAN_MPACC_MAX / 10.0E6);
+	DB32 dbSV = dbMMpS;
+	dbSV *= ZSCAN_DEBUG_PARAM;
+	dbSV *= dbRet;
+	q27SV = (u32)dbSV;
+	return q27SV;
+}
+
+u32 ZSCAN_MMpS2SVV(u32 dbMMpSS)
+{
+	u32 dbSVV;
+	dbSVV = dbMMpSS*(65536);
+	dbSVV /= (10.0E6);
+	dbSVV *= ZSCAN_DEBUG_PARAM;
+	dbSVV /= (10.0E6);
+	dbSVV *= ZSCAN_MPACC_MAX;
+	dbSVV *= 2;
+
+	return (u32)dbSVV;
+}
+
+u32 ZScan_CalcAddS(u32 ulSV, u32 ulSA)
+{
+	DB32 ADDSV;
+	ADDSV = ulSV * (65536);
+	ADDSV /= ulSA;
+	ADDSV /=(536870912);
+	ADDSV *= ulSV;
+	ADDSV /=2;
+	ADDSV *= 2;
+
+	return (u32)ADDSV;	
+}
+
+
+u32 ZScan_CalcSubMP(U32 ulV, U32 ulA, U32 ulPos, u16 dir, u32 mp_cur)
+{
+	u32 ulAddS;
+	
+	ulAddS = ZScan_CalcAddS(ulV, ulA);
+	if(dir == ANALY_Z_MOTOR_DIR_POS)
+	{
+		if ( ulAddS >= (ulPos - mp_cur) / 2 )
+		{
+			if((ulPos - mp_cur) == 1)
+				return ulPos;
+			return ((ulPos + mp_cur)/ 2);
+		}
+		else
+			return (ulPos - ulAddS);
+	}
+	else
+	{
+		if ( ulAddS >= (mp_cur - ulPos) / 2 )
+			return ((mp_cur + ulPos)/ 2);
+		else
+			return (ulPos + ulAddS);
+	}
+}
+
+
+
+
+

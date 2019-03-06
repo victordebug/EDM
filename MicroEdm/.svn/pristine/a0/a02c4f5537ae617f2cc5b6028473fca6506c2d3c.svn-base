@@ -1,0 +1,350 @@
+#include "app.h"
+#include "systick.h"
+#include "uart.h"
+#include "includes.h"
+#include "GPIO.h"
+#include "Timer.h"
+#include <stdio.h>
+#include <math.h>
+#include "fsmc.h"
+#include "eeprom_24lc16b.h"
+#include "voltage.h"
+#include "ADC.h" 
+#include "edm.h"
+
+/*******************设置任务优先级*******************/
+#define MAIN_TASK_PRIO 2
+#define LED_TASK_PRIO  3
+/************设置栈大小(单位 OS_STK ) ************/
+#define LED_TASK_STK_SIZE  0x50
+#define MAIN_TASK_STK_SIZE 0x0FFF
+
+static OS_STK led_task_stk[LED_TASK_STK_SIZE]; //定义栈
+static OS_STK main_task_stk[MAIN_TASK_STK_SIZE]; //定义栈
+
+U32 g_MS = 0;
+u16 system_state = 0x00;
+
+void Task_Comm(void * pArg)
+{
+   INT8U ret = 0;
+	ret = OSTaskCreate(Task_Led,(void *)0,
+			&led_task_stk[LED_TASK_STK_SIZE-1], LED_TASK_PRIO);
+	if (ret != 0)
+	{
+		 printf("创建Task_Led任务失败\r\n");
+	}
+	
+	ret = OSTaskCreate(Task_Main,(void *)0,
+			&main_task_stk[MAIN_TASK_STK_SIZE-1], MAIN_TASK_PRIO);
+	if (ret != 0)
+	{
+		 printf("创建Task_Main任务失败\r\n");
+	}
+	Uart_Thread();
+}
+
+void Task_Main(void * pArg)
+{
+	u16 fsmc_read = 0;
+	u16 motor_vg = 0;
+/*
+	fpga_write(ADDR_PWM0_PERID, 50);
+	fpga_write(ADDR_PWM0_DUTY, 5);
+	fpga_write(ADDR_PWM0_DEAD_ZONE, 2);
+	
+	fpga_write(ADDR_PWM1_PERID, 50);
+	fpga_write(ADDR_PWM1_DUTY, 5);
+	fpga_write(ADDR_PWM1_DEAD_ZONE, 2);
+	
+	fpga_write(ADDR_PWM2_PERID, 50);
+	fpga_write(ADDR_PWM2_DUTY, 5);
+	fpga_write(ADDR_PWM2_DEAD_ZONE, 2);
+	
+	fpga_write(ADDR_PWM3_PERID, 50);
+	fpga_write(ADDR_PWM3_DUTY, 5);
+	fpga_write(ADDR_PWM3_DEAD_ZONE, 2);
+	
+	fpga_write(ADDR_PWM_COMMAND,0x0f);	//使能
+*/
+
+	system_state |= SYSTEM_IS_RUN;
+	system_state |= SYSTEM_IS_WORK;
+	//system_state |= SYSTEM_IS_ERROR;
+
+/*
+	fpga_write(ADDR_Z0_MOTOR_CTRL, 0x00);	    //命令寄存器全置零
+	fpga_write(ADDR_Z0_MOTOR_DIAG, (0x01<<2));	//诊断寄存器的setMaxMP
+	OSTimeDlyHMSM(0,0,0,10);
+	fpga_write(ADDR_Z0_MOTOR_DIAG, 0x00);	    //诊断寄存器全置零
+	
+	fpga_write(ADDR_Z0_SET_ACC, 0x111);	        //加速度寄存器
+	fpga_write(ADDR_Z0_SET_V_L, 0xffff);	    //设置速度低位
+	fpga_write(ADDR_Z0_SET_V_H, 0);
+	//fpga_write(ADDR_Z0_MIN_V_L, 0x22);
+	//fpga_write(ADDR_Z0_MIN_V_H, 0);
+	//fpga_write(ADDR_Z0_SUB_MP_L, 0xff);
+	//fpga_write(ADDR_Z0_SUB_MP_H, 0);
+	//fpga_write(ADDR_Z0_END_MAP_L, 0xffff);
+	//fpga_write(ADDR_Z0_END_MAP_H, 0xf);	
+	OSTimeDlyHMSM(0,0,0,10);
+
+	fpga_write(ADDR_Z0_MOTOR_CTRL, 0x03);	//命令寄存器驱动器使能和脉冲使能
+	OSTimeDlyHMSM(0,0,0,10);
+	fpga_write(ADDR_Z0_MOTOR_CTRL, 0x0B);	//命令寄存器startMove置1
+*/
+	
+/*
+//旋转电机--先使能再设置K
+	fpga_write(ADDR_COMMAND_DCMOTION, (0x01<<4));//使能旋转电机
+	OSTimeDlyHMSM(0,0,0,100);
+	fpga_write(ADDR_Z0_DCMOTOR_K, 128);
+	fpga_write(ADDR_Z1_DCMOTOR_K, 128);
+	fpga_write(ADDR_Z2_DCMOTOR_K, 128);
+	fpga_write(ADDR_Z3_DCMOTOR_K, 128);
+*/
+
+
+	while (1)
+	{
+
+
+/*
+		printf("\r\n>>>>>>>>>>>>>>>>>>>0.0v\r\n");
+		ctl_voltage(0);
+		OSTimeDlyHMSM(0,0,10,0);
+
+
+		printf("\r\n>>>>>>>>>>>>>>>>>>>1.024v\r\n");
+		ctl_voltage(1);
+		OSTimeDlyHMSM(0,0,10,0);
+
+		printf("\r\n>>>>>>>>>>>>>>>>>>>2.048v\r\n");
+		ctl_voltage(2.45);
+		OSTimeDlyHMSM(0,0,10,0);
+
+		printf("\r\n>>>>>>>>>>>>>>>>>>>4.095v\r\n");
+		ctl_voltage(3.9);
+		OSTimeDlyHMSM(0,0,10,0);
+*/
+
+
+
+	/*
+		printf("\r\n");
+		printf(">>>version:0x%0x\r\n", fpga_read(ADDR_VERSION));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_MOTOR_CTRL));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_MOTOR_STATUS));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_CUR_MP_L));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_CUR_MP_H));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_CUR_EP_L));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_CUR_EP_H));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_CUR_V_L));
+		printf(">>>0x%0x\r\n", fpga_read(ADDR_Z3_CUR_V_H));
+		printf("\r\n");
+*/
+
+/*	
+		printf(">>>0002:0x%0x\r\n", fpga_read(0x0002));
+		printf(">>>002b:0x%0x\r\n", fpga_read(0x002b));
+		printf(">>>ADDR_Z0_CUR_V_L:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_V_L));
+		printf(">>>ADDR_Z0_CUR_V_L:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_V_H));
+*/
+
+/*		printf(">>>:0x%0x\r\n", fpga_read(0x0000));
+		printf(">>>:%d\r\n", fpga_read(0x0000));
+
+		printf(">>>:0x%0x\r\n", fpga_read(0x0001));
+		printf(">>>:%d\r\n", fpga_read(0x0001));
+
+		printf(">>>:0x%0x\r\n", fpga_read(0x0002));
+		printf(">>>:%d\r\n", fpga_read(0x0002));
+*/
+		OSTimeDlyHMSM(0,0,1,0);
+/*
+		fsmc_read = fpga_read(ADDR_PWM_COMMAND);
+		printf("command-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM0_PERID);
+		printf("period-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM0_DUTY);
+		printf("duty-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM0_DEAD_ZONE);
+		printf("deadZone-->0x%0x\r\n", fsmc_read);
+
+		printf("\r\n**********************************\r\n");
+		
+		fsmc_read = fpga_read(ADDR_PWM_COMMAND);
+		printf("command-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM1_PERID);
+		printf("period-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM1_DUTY);
+		printf("duty-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM1_DEAD_ZONE);
+		printf("deadZone-->0x%0x\r\n", fsmc_read);
+
+		printf("\r\n**********************************\r\n");
+		
+
+		fsmc_read = fpga_read(ADDR_PWM_COMMAND);
+		printf("command-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM2_PERID);
+		printf("period-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM2_DUTY);
+		printf("duty-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM2_DEAD_ZONE);
+		printf("deadZone-->0x%0x\r\n", fsmc_read);
+
+
+		printf("\r\n**********************************\r\n");
+
+		fsmc_read = fpga_read(ADDR_PWM_COMMAND);
+		printf("command-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM3_PERID);
+		printf("period-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM3_DUTY);
+		printf("duty-->0x%0x\r\n", fsmc_read);
+
+		fsmc_read = fpga_read(ADDR_PWM3_DEAD_ZONE);
+		printf("deadZone-->0x%0x\r\n", fsmc_read);
+
+*/
+
+/*
+//VG
+		motor_vg = get_voltage(KIND_MOTOR_VG);
+		printf("VG_MOTOR-->%d\r\n",motor_vg);
+		
+		OSTimeDlyHMSM(0,0,1,0);
+		//ctl_voltage(12);
+		//OSTimeDlyHMSM(0,0,1,0);
+*/
+
+
+//EEPROM
+/*		u8 txt_buf[] = {"hello world"};
+		u8 buf_size = sizeof(txt_buf);
+		u8 m_read_buf[12] = {0};
+
+		EEPROM_24LC16B_WriteBuf(0 ,(u8 *)txt_buf, buf_size);
+		EEPROM_24LC16B_WriteBuf(1 ,(u8 *)txt_buf, buf_size);
+		EEPROM_24LC16B_WriteBuf(2 ,(u8 *)txt_buf, buf_size);
+		EEPROM_24LC16B_WriteBuf(3 ,(u8 *)txt_buf, buf_size);
+		EEPROM_24LC16B_WriteBuf(4 ,(u8 *)txt_buf, buf_size);
+		EEPROM_24LC16B_WriteBuf(5 ,(u8 *)txt_buf, buf_size);
+		EEPROM_24LC16B_WriteBuf(6 ,(u8 *)txt_buf, buf_size);
+		EEPROM_24LC16B_WriteBuf(7 ,(u8 *)txt_buf, buf_size);
+
+		OSTimeDlyHMSM(0,0,1,0);
+		EEPROM_24LC16B_ReadBuf(0, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+
+		EEPROM_24LC16B_ReadBuf(1, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+
+		EEPROM_24LC16B_ReadBuf(2, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+
+		EEPROM_24LC16B_ReadBuf(3, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+
+		EEPROM_24LC16B_ReadBuf(4, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+
+		EEPROM_24LC16B_ReadBuf(5, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+
+		EEPROM_24LC16B_ReadBuf(6, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+
+		EEPROM_24LC16B_ReadBuf(7, m_read_buf, buf_size);
+		printf("read--->%s\r\n", m_read_buf);
+				
+
+		OSTimeDlyHMSM(0,0,1,0);
+*/
+
+
+
+
+
+
+
+/*
+//FSMC
+		fpga_write(0X0020, 0x7f);
+		OSTimeDlyHMSM(0,0,1,0);	
+		fpga_write(0X0050, 0x7f);
+		OSTimeDlyHMSM(0,0,1,0);
+		fpga_write(0X0080, 0x7f);
+		OSTimeDlyHMSM(0,0,1,0);
+		fpga_write(0X00b0, 0x7f);
+		OSTimeDlyHMSM(0,0,1,0);
+
+		fsmc_fread = fpga_read(0X00000);
+		printf("0X00000<----->0x%0x\r\n",fsmc_fread);
+		OSTimeDlyHMSM(0,0,1,0);
+		
+		fsmc_fread = fpga_read(0X00020);
+		printf("0X00020<----->0x%0x\r\n",fsmc_fread);
+
+		OSTimeDlyHMSM(0,0,1,0);
+		fsmc_fread = fpga_read(0X00050);
+		printf("0X00050<----->0x%0x\r\n",fsmc_fread);
+
+		OSTimeDlyHMSM(0,0,1,0);
+		fsmc_fread = fpga_read(0X00080);
+		printf("0X00080<----->0x%0x\r\n",fsmc_fread);
+
+		OSTimeDlyHMSM(0,0,1,0);
+		fsmc_fread = fpga_read(0X000b0);
+		printf("0X000b0<----->0x%0x\r\n",fsmc_fread);
+		OSTimeDlyHMSM(0,0,1,0);
+
+		printf("---------------------------\r\n");
+*/
+	}
+}
+
+void Task_Led(void * pArg)
+{
+	
+	while (1)
+	{
+		if (system_state & SYSTEM_IS_RUN)
+		{
+			GPIO_SetBits(GPIOD,PD12_LED_ERROR);
+			
+			OSTimeDlyHMSM(0,0,0,100);
+			if (system_state & SYSTEM_IS_WORK)  GPIO_ResetBits(GPIOD,PD13_LED_WORK);
+			GPIO_ResetBits(GPIOD,PD11_LED_RUN);
+			OSTimeDlyHMSM(0,0,0,100);
+			if (system_state & SYSTEM_IS_WORK) GPIO_SetBits(GPIOD,PD13_LED_WORK);
+			GPIO_SetBits(GPIOD,PD11_LED_RUN);
+
+		}else if (system_state & SYSTEM_IS_ERROR)
+		{
+			GPIO_SetBits(GPIOD,PD11_LED_RUN);
+			GPIO_SetBits(GPIOD,PD13_LED_WORK);
+			
+			OSTimeDlyHMSM(0,0,1,0);
+			GPIO_ResetBits(GPIOD,PD12_LED_ERROR);
+			GPIO_ResetBits(GPIOG,PG4_BEEP);
+			OSTimeDlyHMSM(0,0,1,0);
+			GPIO_SetBits(GPIOD,PD12_LED_ERROR);
+			GPIO_SetBits(GPIOG,PG4_BEEP);
+		}
+
+	}
+}
+

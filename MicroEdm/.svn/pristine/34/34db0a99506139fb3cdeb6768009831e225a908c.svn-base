@@ -1,0 +1,51 @@
+#ifndef VOLTAGE_H_20190115
+#define VOLTAGE_H_20190115
+
+
+#include "stm32f10x.h"
+/*********************************************************************
+* 版权所有 (C)2018, 杭州数腾科技有限公司
+* 
+* 内容摘要：主要包含电压的测量和控制接口
+* 当前版本：
+* 作 者：henry
+* 完成日期：2019年 月 日
+*
+* 修改记录1：修改历史记录，包括修改日期、修改者及修改内容
+* 修改日期：
+* 版 本 号：
+* 修 改 人：
+* 修改内容：
+**********************************************************************/
+
+#define KIND_MOTOR_VG        0
+#define KIND_EDM_VG		     1
+#define VG_VALUE_WORD        wordof(u16)
+
+#define NUM_TRANSFOR         10
+
+typedef struct hv_switch
+{
+	u16 EN;
+	u16 vol;
+}HV_SWITCH_ANALY;
+
+void voltage_init(void);
+
+u16 VOL_GetStateEx(u16 pid, u16* pState);
+
+
+u16 H_voltage_switch(HV_SWITCH_ANALY *m_data);
+
+
+
+
+
+
+
+
+
+
+#endif
+
+

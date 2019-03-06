@@ -1,0 +1,323 @@
+#include "fsmc.h"
+#include "gpio.h"
+#include "stm32f10x_fsmc.h"
+#include "stm32f10x.h"
+#include "motor.h"
+#include "string.h"
+#include "edm.h"
+#define Bank1_SRAM1_ADDR ((u32)(0x60000000))
+
+
+void FSMC_Init(void)
+{
+	FSMC_NORSRAMInitTypeDef FSMC_NORSRAMInitStructure;
+	FSMC_NORSRAMTimingInitTypeDef readWriteTiming;
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD|RCC_APB2Periph_GPIOB|
+		RCC_APB2Periph_GPIOE|RCC_APB2Periph_GPIOF|RCC_APB2Periph_GPIOG|RCC_APB2Periph_AFIO, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC,ENABLE);
+
+	//初始化PB口
+	GPIO_InitStructure.GPIO_Pin   = PB7_FPGA_NADV;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+	//初始化PD口
+	GPIO_InitStructure.GPIO_Pin   = PD0_FSMC_DATA2|PD1_FSMC_DATA3|PD4_FPGA_NOE|PD5_FPGA_NWE|
+									PD7_FPGA_NE|PD8_FSMC_DATA13|PD9_FSMC_DATA14|PD10_FSMC_DATA15|
+									PD14_FSMC_DATA0|PD15_FSMC_DATA1;
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
+	
+	//初始化PE口
+	GPIO_InitStructure.GPIO_Pin   = PE7_FSMC_DATA4|PE8_FSMC_DATA5|PE9_FSMC_DATA6|PE10_FSMC_DATA7|
+									PE11_FSMC_DATA8|PE12_FSMC_DATA9|PE13_FSMC_DATA10|PE14_FSMC_DATA11|
+									PE15_FSMC_DATA12;
+	GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+	//初始化PF口
+	GPIO_InitStructure.GPIO_Pin   = PF0_FSMC_ADDR0|PF1_FSMC_ADDR1|PF2_FSMC_ADDR2|PF3_FSMC_ADDR3|
+									PF4_FSMC_ADDR4|PF5_FSMC_ADDR5|PF12_FSMC_ADDR6|PF13_FSMC_ADDR7|
+									PF14_FSMC_ADDR8|PF15_FSMC_ADDR9;
+	GPIO_Init(GPIOF, &GPIO_InitStructure);
+
+	//初始化PG口
+	GPIO_InitStructure.GPIO_Pin   = PG0_FSMC_ADDR10|PG1_FSMC_ADDR11|PG2_FSMC_ADDR12|PG3_FSMC_ADDR13;
+	GPIO_Init(GPIOG, &GPIO_InitStructure);
+	
+	readWriteTiming.FSMC_AddressSetupTime      = 0;                                               //地址建立时间（ADDSET）
+	readWriteTiming.FSMC_AddressHoldTime       = 0;                                               //地址保持时间（ADDHLD）模式A未用到
+	readWriteTiming.FSMC_DataSetupTime         = 2;                                               //数据保持时间（DATAST）
+	readWriteTiming.FSMC_BusTurnAroundDuration = 0;                                               //
+	readWriteTiming.FSMC_CLKDivision           = 0;                                               //
+	readWriteTiming.FSMC_DataLatency           = 0;                                               //
+	readWriteTiming.FSMC_AccessMode            = FSMC_AccessMode_A;                               //模式A
+	
+	FSMC_NORSRAMInitStructure.FSMC_Bank                  = FSMC_Bank1_NORSRAM1;                   //这是使用NE1
+	FSMC_NORSRAMInitStructure.FSMC_DataAddressMux        = FSMC_DataAddressMux_Disable;           //
+	FSMC_NORSRAMInitStructure.FSMC_MemoryType            = FSMC_MemoryType_SRAM;                  //
+	FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth       = FSMC_MemoryDataWidth_16b;              //
+	FSMC_NORSRAMInitStructure.FSMC_BurstAccessMode       = FSMC_BurstAccessMode_Disable;          //
+	FSMC_NORSRAMInitStructure.FSMC_WaitSignalPolarity    = FSMC_WaitSignalPolarity_Low;           //
+	FSMC_NORSRAMInitStructure.FSMC_WrapMode              = FSMC_WrapMode_Disable;                 //
+	FSMC_NORSRAMInitStructure.FSMC_WaitSignalActive      = FSMC_WaitSignalActive_BeforeWaitState; //
+	FSMC_NORSRAMInitStructure.FSMC_WriteOperation        = FSMC_WriteOperation_Enable;            //
+	FSMC_NORSRAMInitStructure.FSMC_WaitSignal            = FSMC_WaitSignal_Disable;               //
+	FSMC_NORSRAMInitStructure.FSMC_ExtendedMode          = FSMC_ExtendedMode_Disable;             //
+	FSMC_NORSRAMInitStructure.FSMC_WriteBurst            = FSMC_WriteBurst_Disable;               //
+	FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &readWriteTiming;                      //
+	FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct     = &readWriteTiming;                      //
+	
+	FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);
+	FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);
+}
+
+/*
+void FSMC_FPGA_WriteByte(u16 WriteAddr,u16 data)
+{
+	*((u16*)(Bank1_SRAM1_ADDR + (WriteAddr << 17))) = data;
+}
+
+u16 FSMC_FPGA_ReadByte(u16 ReadAddr)
+{
+	ReadAddr = ReadAddr+1;
+	return ( *((u16*)(Bank1_SRAM1_ADDR + (ReadAddr << 17))) );
+}
+*/
+
+//获取FPGA版本信息
+u16 FPGA_VERSION_GetStateEx(u16 pid, u16 *pState)
+{
+	pState[0] = (u16)fpga_read(ADDR_VERSION);
+
+	return wordof(u16);
+}
+
+
+//步进电机极限位感应传感
+u16 SENSOR_GetStateEx(u16 pid, u16 *pState)
+{
+	pState[0] = fpga_read(ADDR_SENSOR);
+	return BIT_Z_SENSOR_WORD;
+}
+
+
+
+//旋转电机设置
+void FPGA_dcMotor_set(DC_MOTOR *dc_motor)
+{
+	if (dc_motor->EN_motor == EN_MOTOR_ON)
+	{
+		if (dc_motor->ID_motor == ID_DC_MOTOR_Z0)
+		{
+			fpga_write(ADDR_Z0_DCMOTOR_K, dc_motor->speed_motor);
+		}else if (dc_motor->ID_motor == ID_DC_MOTOR_Z1)
+		{
+			fpga_write(ADDR_Z1_DCMOTOR_K, dc_motor->speed_motor);
+		}else if (dc_motor->ID_motor == ID_DC_MOTOR_Z2)
+		{
+			fpga_write(ADDR_Z2_DCMOTOR_K, dc_motor->speed_motor);
+		}else if (dc_motor->ID_motor == ID_DC_MOTOR_Z3)
+		{
+			fpga_write(ADDR_Z3_DCMOTOR_K, dc_motor->speed_motor);
+		}
+		fpga_write(ADDR_COMMAND_DCMOTION, (0x1<<4));//使能旋转电机
+	}else if (dc_motor->EN_motor == EN_MOTOR_OFF)
+	{
+		fpga_write(ADDR_COMMAND_DCMOTION, 0);
+	}
+}
+
+//步进电机设置
+void FPGA_zmotor_set(Z_MOTOR *z_motor)
+{
+	if (z_motor->ID_motor == ID_Z_MOTOR_Z0)
+	{
+		fpga_write(ADDR_Z0_MOTOR_DIAG, z_motor->motor_diagnose.all_diag);  //诊断寄存器
+		fpga_write(ADDR_Z0_SET_ACC, z_motor->acc_motor);	//加速度寄存器
+		fpga_write(ADDR_Z0_SET_V_L, z_motor->speed_L);      //设置速度低位
+		fpga_write(ADDR_Z0_SET_V_H, z_motor->speed_H);
+		fpga_write(ADDR_Z0_MIN_V_L, z_motor->crawl_speed_L);
+		fpga_write(ADDR_Z0_MIN_V_H, z_motor->crawl_speed_H);
+		fpga_write(ADDR_Z0_SUB_MP_L, z_motor->location_speedCut_L);
+		fpga_write(ADDR_Z0_SUB_MP_H, z_motor->location_speedCut_H);
+		fpga_write(ADDR_Z0_END_MAP_L, z_motor->location_target_L);
+		fpga_write(ADDR_Z0_END_MAP_H, z_motor->location_target_H);
+	    fpga_write(ADDR_Z0_MOTOR_CTRL, z_motor->motor_control.all_command);	//命令寄存器
+	}else if (z_motor->ID_motor == ID_Z_MOTOR_Z1)
+	{
+		fpga_write(ADDR_Z1_MOTOR_DIAG, z_motor->motor_diagnose.all_diag);  //诊断寄存器
+		fpga_write(ADDR_Z1_SET_ACC, z_motor->acc_motor);	//加速度寄存器
+		fpga_write(ADDR_Z1_SET_V_L, z_motor->speed_L);      //设置速度低位
+		fpga_write(ADDR_Z1_SET_V_H, z_motor->speed_H);
+		fpga_write(ADDR_Z1_MIN_V_L, z_motor->crawl_speed_L);
+		fpga_write(ADDR_Z1_MIN_V_H, z_motor->crawl_speed_H);
+		fpga_write(ADDR_Z1_SUB_MP_L, z_motor->location_speedCut_L);
+		fpga_write(ADDR_Z1_SUB_MP_H, z_motor->location_speedCut_H);
+		fpga_write(ADDR_Z1_END_MAP_L, z_motor->location_target_L);
+		fpga_write(ADDR_Z1_END_MAP_H, z_motor->location_target_H);
+		fpga_write(ADDR_Z1_MOTOR_CTRL, z_motor->motor_control.all_command);	//命令寄存器
+
+	}else if (z_motor->ID_motor == ID_Z_MOTOR_Z2)
+	{
+		fpga_write(ADDR_Z2_MOTOR_DIAG, z_motor->motor_diagnose.all_diag);  //诊断寄存器
+		fpga_write(ADDR_Z2_SET_ACC, z_motor->acc_motor);	//加速度寄存器
+		fpga_write(ADDR_Z2_SET_V_L, z_motor->speed_L);      //设置速度低位
+		fpga_write(ADDR_Z2_SET_V_H, z_motor->speed_H);
+		fpga_write(ADDR_Z2_MIN_V_L, z_motor->crawl_speed_L);
+		fpga_write(ADDR_Z2_MIN_V_H, z_motor->crawl_speed_H);
+		fpga_write(ADDR_Z2_SUB_MP_L, z_motor->location_speedCut_L);
+		fpga_write(ADDR_Z2_SUB_MP_H, z_motor->location_speedCut_H);
+		fpga_write(ADDR_Z2_END_MAP_L, z_motor->location_target_L);
+		fpga_write(ADDR_Z2_END_MAP_H, z_motor->location_target_H);
+		fpga_write(ADDR_Z2_MOTOR_CTRL, z_motor->motor_control.all_command);	//命令寄存器
+
+	}else if (z_motor->ID_motor == ID_Z_MOTOR_Z3)
+	{
+		fpga_write(ADDR_Z3_MOTOR_DIAG, z_motor->motor_diagnose.all_diag);  //诊断寄存器
+		fpga_write(ADDR_Z3_SET_ACC, z_motor->acc_motor);	//加速度寄存器
+		fpga_write(ADDR_Z3_SET_V_L, z_motor->speed_L);      //设置速度低位
+		fpga_write(ADDR_Z3_SET_V_H, z_motor->speed_H);
+		fpga_write(ADDR_Z3_MIN_V_L, z_motor->crawl_speed_L);
+		fpga_write(ADDR_Z3_MIN_V_H, z_motor->crawl_speed_H);
+		fpga_write(ADDR_Z3_SUB_MP_L, z_motor->location_speedCut_L);
+		fpga_write(ADDR_Z3_SUB_MP_H, z_motor->location_speedCut_H);
+		fpga_write(ADDR_Z3_END_MAP_L, z_motor->location_target_L);
+		fpga_write(ADDR_Z3_END_MAP_H, z_motor->location_target_H);
+		fpga_write(ADDR_Z3_MOTOR_CTRL, z_motor->motor_control.all_command);	//命令寄存器
+	}
+}
+
+//步进电机运动状态
+u16 ZMOTOR_STAT_GetStateEx(u16 pid, u16 *pState)
+{
+	Z_MOTOR_STAT *z_motor_stat = (Z_MOTOR_STAT*)pState;
+	
+	if (pid == ID_Z_MOTOR_Z0)
+	{
+		z_motor_stat->state_motor = fpga_read(ADDR_Z0_MOTOR_STATUS);
+		z_motor_stat->location_cur_L = fpga_read(ADDR_Z0_CUR_MP_L);
+		z_motor_stat->location_cur_H = fpga_read(ADDR_Z0_CUR_MP_H);
+		z_motor_stat->location_cur_coder_L = fpga_read(ADDR_Z0_CUR_EP_L);
+		z_motor_stat->location_cur_coder_H = fpga_read(ADDR_Z0_CUR_EP_H);
+		z_motor_stat->speed_cur_L = fpga_read(ADDR_Z0_CUR_V_L);
+		z_motor_stat->speed_cur_H = fpga_read(ADDR_Z0_CUR_V_H);
+	}else if (pid == ID_Z_MOTOR_Z1)
+	{
+		z_motor_stat->state_motor = fpga_read(ADDR_Z1_MOTOR_STATUS);
+		z_motor_stat->location_cur_L = fpga_read(ADDR_Z1_CUR_MP_L);
+		z_motor_stat->location_cur_H = fpga_read(ADDR_Z1_CUR_MP_H);
+		z_motor_stat->location_cur_coder_L = fpga_read(ADDR_Z1_CUR_EP_L);
+		z_motor_stat->location_cur_coder_H = fpga_read(ADDR_Z1_CUR_EP_H);
+		z_motor_stat->speed_cur_L = fpga_read(ADDR_Z1_CUR_V_L);
+		z_motor_stat->speed_cur_H = fpga_read(ADDR_Z1_CUR_V_H);
+
+	}else if (pid == ID_Z_MOTOR_Z2)
+	{
+		z_motor_stat->state_motor = fpga_read(ADDR_Z2_MOTOR_STATUS);
+		z_motor_stat->location_cur_L = fpga_read(ADDR_Z2_CUR_MP_L);
+		z_motor_stat->location_cur_H = fpga_read(ADDR_Z2_CUR_MP_H);
+		z_motor_stat->location_cur_coder_L = fpga_read(ADDR_Z2_CUR_EP_L);
+		z_motor_stat->location_cur_coder_H = fpga_read(ADDR_Z2_CUR_EP_H);
+		z_motor_stat->speed_cur_L = fpga_read(ADDR_Z2_CUR_V_L);
+		z_motor_stat->speed_cur_H = fpga_read(ADDR_Z2_CUR_V_H);
+
+	}else if (pid == ID_Z_MOTOR_Z3)
+	{
+		z_motor_stat->state_motor = fpga_read(ADDR_Z3_MOTOR_STATUS);
+		z_motor_stat->location_cur_L = fpga_read(ADDR_Z3_CUR_MP_L);
+		z_motor_stat->location_cur_H = fpga_read(ADDR_Z3_CUR_MP_H);
+		z_motor_stat->location_cur_coder_L = fpga_read(ADDR_Z3_CUR_EP_L);
+		z_motor_stat->location_cur_coder_H = fpga_read(ADDR_Z3_CUR_EP_H);
+		z_motor_stat->speed_cur_L = fpga_read(ADDR_Z3_CUR_V_L);
+		z_motor_stat->speed_cur_H = fpga_read(ADDR_Z3_CUR_V_H);
+
+	}
+
+	return Z_MOTOR_STATE_WORD;
+}
+
+
+
+
+
+/*EDM*/
+//RC放电状态查询
+u16 RC_STAT_GetStateEx(u16 pid, u16 *pState)
+{
+	RC_STATE *m_rc_state = (RC_STATE*)pState;
+	u16 rc_state = fpga_read(ADDR_DISCHARGE_STATUS);
+	m_rc_state->rc_status = rc_state;
+	
+	m_rc_state->rc0_count = fpga_read(ADDR_DISCHARGE_COUNT0);
+	m_rc_state->rc1_count = fpga_read(ADDR_DISCHARGE_COUNT1);
+	m_rc_state->rc2_count = fpga_read(ADDR_DISCHARGE_COUNT2);
+	m_rc_state->rc3_count = fpga_read(ADDR_DISCHARGE_COUNT3);
+
+	return RC_STATE_WORD;
+}
+
+void FPGA_EDM_RC(RC_EDM *edm_rc)
+{
+	switch (edm_rc->ID)
+	{
+		case ID_RC_0:
+			fpga_write(ADDR_SHORT_THRESHOLD0, edm_rc->short_threshold);
+			break;
+		case ID_RC_1:
+			fpga_write(ADDR_SHORT_THRESHOLD1, edm_rc->short_threshold);
+			break;
+		case ID_RC_2:
+			fpga_write(ADDR_SHORT_THRESHOLD2, edm_rc->short_threshold);
+			break;
+		case ID_RC_3:
+			fpga_write(ADDR_SHORT_THRESHOLD3, edm_rc->short_threshold);
+			break;	
+	}
+
+	fpga_write(ADDR_DISCHARGE_COMMAND, edm_rc->command);
+}
+
+
+void FPGA_EDM_PWM(PWD_EDM *edm_pwm)
+{
+	if (edm_pwm->ID == ID_PWM_0)
+	{
+		fpga_write(ADDR_PWM0_PERID, edm_pwm->period_pwm);
+		fpga_write(ADDR_PWM0_DUTY, edm_pwm->duty_pwm);
+		fpga_write(ADDR_PWM0_DEAD_ZONE, edm_pwm->deadZone_pwm);
+		fpga_write(ADDR_PULSE_THRESHOLD0,edm_pwm->pulse_threshold);
+	}else if (edm_pwm->ID == ID_PWM_1)
+	{
+		fpga_write(ADDR_PWM1_PERID, edm_pwm->period_pwm);
+		fpga_write(ADDR_PWM1_DUTY, edm_pwm->duty_pwm);
+		fpga_write(ADDR_PWM1_DEAD_ZONE, edm_pwm->deadZone_pwm);
+		fpga_write(ADDR_PULSE_THRESHOLD1,edm_pwm->pulse_threshold);
+	}else if (edm_pwm->ID == ID_PWM_2)
+	{
+		fpga_write(ADDR_PWM2_PERID, edm_pwm->period_pwm);
+		fpga_write(ADDR_PWM2_DUTY, edm_pwm->duty_pwm);
+		fpga_write(ADDR_PWM2_DEAD_ZONE, edm_pwm->deadZone_pwm);
+		fpga_write(ADDR_PULSE_THRESHOLD2,edm_pwm->pulse_threshold);
+	}else if (edm_pwm->ID == ID_PWM_3)
+	{
+		fpga_write(ADDR_PWM3_PERID, edm_pwm->period_pwm);
+		fpga_write(ADDR_PWM3_DUTY, edm_pwm->duty_pwm);
+		fpga_write(ADDR_PWM3_DEAD_ZONE, edm_pwm->deadZone_pwm);
+		fpga_write(ADDR_PULSE_THRESHOLD3,edm_pwm->pulse_threshold);
+	}
+
+	fpga_write(ADDR_PWM_COMMAND, edm_pwm->command_pwm);	//PWM使能
+	fpga_write(ADDR_PULSE_COMMAND, edm_pwm->pulse_command);	//放电使能
+
+}
+
+
+u16 PWM_GetStateEx(u16 pid, u16 *state)
+{
+	state[0] = fpga_read(ADDR_PULSE_STATUS);
+
+	return PWM_STATE_WORD;
+}
+

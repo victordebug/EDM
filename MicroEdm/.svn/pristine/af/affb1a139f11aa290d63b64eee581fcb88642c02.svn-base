@@ -1,0 +1,61 @@
+#include "data_analy.h"
+#include "Command.h"
+#include "motor.h"
+#include "stdtypes.h"
+#include "edm.h"
+
+u16 data_analy_DC_motor(void)
+{
+	DC_MOTOR_ANALYSIS *m_analy_dc_motor = NULL;
+	
+	m_analy_dc_motor->en_motor    = UART_R_DATAn(0);
+	m_analy_dc_motor->ID          = UART_R_DATAn(1);
+	m_analy_dc_motor->speed_motor = UART_R_DATAn(2);
+
+
+	return NOERROR;
+}
+
+u16 data_analy_Z_motor(void)
+{
+	Z_MOTOR_ANALYSIS *m_analy_z_motor = NULL;
+
+	m_analy_z_motor->ID              = UART_R_DATAn(0);
+	m_analy_z_motor->en_move         = UART_R_DATAn(1);
+	m_analy_z_motor->acc_motor       = UART_R_DATAn(2);
+	m_analy_z_motor->speed_motor     = UART_R_DATAn(3);
+	m_analy_z_motor->dir             = UART_R_DATAn(4);
+	m_analy_z_motor->location_target = UART_R_DATAn(5);
+
+	return NOERROR;
+}
+
+u16 data_analy_RC_pulse(void)
+{
+	ANALY_RC_EDM *m_analy_rc = NULL;
+
+	m_analy_rc->ID   		    = UART_R_DATAn(0);
+	m_analy_rc->command         = UART_R_DATAn(1);
+	m_analy_rc->short_threshold = UART_R_DATAn(2);
+
+	return NOERROR;
+}
+
+u16 data_analy_PWM_pulse(void)
+{
+	ANALY_PWM_EDM *m_analy_pwm = NULL;
+
+	m_analy_pwm->ID              = UART_R_DATAn(0);
+	m_analy_pwm->EN              = UART_R_DATAn(1);
+	m_analy_pwm->period_pwm      = UART_R_DATAn(2);
+	m_analy_pwm->duty_pwm        = UART_R_DATAn(3);
+	m_analy_pwm->deadZone_pwm    = UART_R_DATAn(4);
+	m_analy_pwm->pulse_threshold = UART_R_DATAn(5);
+
+	return NOERROR;
+}
+
+
+
+
+

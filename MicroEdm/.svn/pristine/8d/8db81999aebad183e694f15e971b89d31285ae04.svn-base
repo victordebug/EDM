@@ -1,0 +1,268 @@
+#ifndef MOTOR_H_20190115
+#define MOTOR_H_20190115
+
+#include "stm32f10x.h"
+#include "config.h"
+#include "stdtypes.h"
+/*********************************************************************
+* 版权所有 (C)2018, 杭州数腾科技有限公司
+* 
+* 内容摘要：主要包含Z轴电机和旋转电机的初始化、工作和停止的接口
+* 当前版本：
+* 作 者：henry
+* 完成日期：2019年 月 日
+*
+* 修改记录1：修改历史记录，包括修改日期、修改者及修改内容
+* 修改日期：
+* 版 本 号：
+* 修 改 人：
+* 修改内容：
+**********************************************************************/
+
+/*位的宏定义*/
+
+//旋转电机
+#define BIT_DC_MOTOR_ENABLE		       (u16)(0x1<<4)	//直流电机控制寄存器使能位
+
+//步进电机
+//控制寄存器标志位
+#define BIT_Z_MOTOR_CTRL_TRIGGER_POS   (u16)(0x1<<7) //位置记录控制位
+#define BIT_Z_MOTOR_CTRL_TRIGGER_ADD   (u16)(0x1<<6) //加速控制位
+#define BIT_Z_MOTOR_CTRL_TRIGGER_SUB   (u16)(0x1<<5) //减速控制位
+#define BIT_Z_MOTOR_CTRL_TRIGGER_STOP  (u16)(0x1<<4) //停止控制位
+#define BIT_Z_MOTOR_CTRL_START_MOVE    (u16)(0x1<<3) //打印头移动信号，上升沿有效，0-1
+#define BIT_Z_MOTOR_CTRL_DIR		   (u16)(0X1<<2) //方向控制位
+#define BIT_Z_MOTOR_CTRL_PULSE_ENABLE  (u16)(0x1<<1) //脉冲使能控制位
+#define BIT_Z_MOTOR_CTRL_SERVO_ENABLE  (u16)(0x1<<0) //驱动器使能控制位
+
+//诊断寄存器标志位
+#define BIT_Z_MOTOR_DIGN_SERVO_SYN     (u16)(0x1<<5) //EP同步MP控制位
+#define BIT_Z_MOTOR_DIGN_ALARM_CLR     (u16)(0x1<<4) //报警清楚位
+#define BIT_Z_MOTOR_DIGN_E_STOP        (u16)(0x1<<3) //紧急停止位
+#define BIT_Z_MOTOR_DIGN_SET_MAX_MP    (u16)(0x1<<2) //MP计数器设置最大值
+#define BIT_Z_MOTOR_DIGN_RESET_MP      (u16)(0x1<<1) //MP计数器清零
+#define BIT_Z_MOTOR_DIGN_DIAGPULSE     (U16)(0X1<<0) //启动诊断控制位
+
+
+//步进电机编号
+#define ID_Z_MOTOR_Z0      0
+#define ID_Z_MOTOR_Z1	   1
+#define ID_Z_MOTOR_Z2      2
+#define ID_Z_MOTOR_Z3      3
+
+//旋转电机编号
+#define ID_DC_MOTOR_Z0     0
+#define ID_DC_MOTOR_Z1     1
+#define ID_DC_MOTOR_Z2     2
+#define ID_DC_MOTOR_Z3     3
+
+
+//Z轴零位传感器地址
+#define BIT_Z0_MIN		   (u16)(0x1<<0)
+#define BIT_Z1_MIN		   (u16)(0x1<<1)
+#define BIT_Z2_MIN		   (u16)(0x1<<2)
+#define BIT_Z3_MIN		   (u16)(0x1<<3)
+
+#define BIT_Z0_MAX         (u16)(0x1<<4)
+#define BIT_Z1_MAX         (u16)(0x1<<5)
+#define BIT_Z2_MAX         (u16)(0x1<<6)
+#define BIT_Z3_MAX         (u16)(0x1<<7)
+
+#define BIT_Z_SENSOR_WORD  wordof(u16)
+
+//电机使能开关
+#define EN_MOTOR_ON     0
+#define EN_MOTOR_OFF    1
+
+
+/*电机的数据换算相关宏*/
+#define DC_MAX_BIT                (4095)
+#define DC_MAX_SPEED              (6000)		
+#define ZSCAN_MPACC_MAX			  (536870912)
+#define ZSCAN_DEBUG_PARAM         (1000)      //机械调试参数
+#define MOTOR_CRAWL_SPEED         (1)           //爬行速度
+
+#define SPEED_FIND_ZERO           (1)           //寻位时的速度
+
+//电机停止模式
+#define STOP_TO_ZERO_VALUE		0
+#define STOP_AT_ONCE            1
+
+
+
+//步进电机控制寄存器
+typedef struct z_motor_ctrl
+{
+	u16 servo_ena : 1;
+	u16 enable : 1;
+	u16 dir : 1;
+	u16 start_move : 1;
+	u16 trigger_stop : 1;
+	u16 trigger_sub : 1;
+	u16 trigger_add : 1;
+	u16 trigger_pos : 1;
+}Z_MOTOR_CTRL;
+
+//步进电机诊断寄存器
+typedef struct z_motor_diag
+{
+	u16 diag_pulse : 1;
+	u16 reset_MP : 1;
+	u16 set_max_MP : 1;
+	u16 e_stop : 1;
+	u16 alarm_clr : 1;
+	u16 servo_syn : 1;
+}Z_MOTOR_DIAG;
+
+
+
+typedef union union_commamd_z_motor 
+{
+	Z_MOTOR_CTRL  bit_command;
+	u16  all_command;    //命令寄存器
+}UNION_COMMAND_Z_MOTOR;
+
+typedef union union_diag_z_motor
+{
+	Z_MOTOR_DIAG bit_diag;
+	u16 all_diag;
+}UNION_DIAG_Z_MOTOR;
+
+/*旋转电机*/
+typedef struct DC_motor
+{
+	u16  EN_motor;
+	u16  ID_motor;         //电机编号
+	u16  speed_motor;      //电机速度设置寄存器
+}DC_MOTOR;
+
+
+/*步进电机*/
+//设置参数
+typedef struct z_motor
+{
+	u16  ID_motor;				//电机编号ID
+	UNION_COMMAND_Z_MOTOR motor_control; //电机控制寄存器
+	UNION_DIAG_Z_MOTOR motor_diagnose;//电机诊断寄存器
+	u16  acc_motor;				//加速度设置寄存器
+	u16  speed_L;	        	//速度低16位
+	u16  speed_H;           	//速度高8位
+	u16  crawl_speed_L;     	//爬行速度低16位
+	u16  crawl_speed_H;     	//爬行速度高8位
+	u16  location_speedCut_L;	//减速点位置低16位
+	u16  location_speedCut_H;	//减速点位置高6位
+	u16  location_target_L;		//目标的位置低16位
+	u16  location_target_H;		//目标的位置高6位
+}Z_MOTOR;
+
+//状态参数
+typedef struct z_motor_stat
+{
+	u16  state_motor;			//电机状态
+	u16  location_cur_L;		//电机当前位置低16位-电机控制脉冲
+	u16  location_cur_H;		//电机当前位置高6位-电机控制脉冲
+	u16  location_cur_coder_L;  //电机当前脉冲低16位-编码器脉冲
+	u16  location_cur_coder_H;  //电机当前位置高6位-编码器脉冲
+	u16  speed_cur_L;			//电机当前速度低16位
+	u16  speed_cur_H;     		//电机当前速度高8位
+}Z_MOTOR_STAT;
+
+#define Z_MOTOR_STATE_WORD      wordof(Z_MOTOR_STAT)
+
+
+//步进电机的所有设置位和状态位
+typedef  struct zscan_motor
+{
+	Z_MOTOR set_z_motor;
+	Z_MOTOR_STAT stat_z_motor;
+}ZSCAN_MOTOR;
+
+
+
+
+//解析协议电机接口
+typedef struct z_motor_en_analy
+{
+	u16 z0_EN;
+	u16 z1_EN;
+	u16 z2_EN;
+	u16 z3_EN;
+}Z_MOTOR_EN_ANALY;
+
+typedef struct z_motor_move_analysis
+{
+	u16 ID:		8;		//马达ID号
+	u16 Unit:	8;		//参数单位
+	u16 Dir;				//马达移动的方向
+	u16 V;				    //移动速度
+	u16 A;				    //移动加速度，加速度单位qn	
+}Z_MOTOR_MOVE_ANALYSIS;
+typedef Z_MOTOR_MOVE_ANALYSIS* Z_MOTOR_MOVE_ANALYSIS_p;
+
+typedef struct z_motor_moveTo_analysis
+{
+	u16 ID:		8;		//马达ID号
+	u16 Unit:	8;		//参数单位
+	u16 Dir;				//马达移动的方向,定位方向选择2，定位
+	u16 V;				    //移动速度
+	u16 A;				    //移动加速度,加速度单位qn	
+	u16 Pos;			    //移动位移
+}Z_MOTOR_MOVETO_ANALYSIS;
+
+typedef struct z_motor_stop_analysis
+{
+	u16 ID;
+	u16 stop_mode;
+}Z_MOTOR_STOP_ANALYSIS;
+
+typedef struct dc_motor_analysis
+{
+	u16 ID;
+	u16 speed_motor;
+}DC_MOTOR_ANALYSIS;
+
+
+
+u16 motor_init(void);
+
+u16 DC_motor_move(DC_MOTOR_ANALYSIS *motor_analy);
+
+u16 DC_motor_stop(DC_MOTOR_ANALYSIS *motor_analy);
+
+u16 z_motor_en(Z_MOTOR_EN_ANALY *m_date);
+
+u16 z_motor_move(Z_MOTOR_MOVE_ANALYSIS *z_motor_analy);
+
+u16 z_motor_moveTo(Z_MOTOR_MOVETO_ANALYSIS *z_motor_analy);
+
+u16 z_motor_stop(Z_MOTOR_STOP_ANALYSIS *z_stop_analy);
+
+u16 z_motor_findZero(void);
+
+
+U32 ZSCAN_MMpS2SVV(DB32 dbMMpSS);
+
+Q27 ZSCAN_MMpS2SV(DB32 dbMMpS);
+
+u32 ZScan_CalcSubMP(U32 ulV, U32 ulA, U32 ulPos, u16 dir, u32 mp_cur);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
+

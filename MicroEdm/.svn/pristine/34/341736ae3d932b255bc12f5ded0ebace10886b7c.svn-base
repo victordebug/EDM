@@ -1,0 +1,68 @@
+#include "voltage.h"
+#include "ADC.h"
+#include "dac_7611ub.h"
+#include "Command.h"
+#include "stdtypes.h"
+
+
+#define MOTOR_STANDARD_VG    24
+#define EDM_STANDARD_VG      24
+
+#define FULL_SCALE 		     4096				//12-bit resolution 
+
+
+void voltage_init(void)
+{
+	ADC1_Init();
+	dac_7611ub_config_init();
+}
+
+
+u16 VOL_GetStateEx(u16 pid, u16* pState)
+{
+	u32 result = 1;
+	if (pid == KIND_MOTOR_VG)
+	{
+		result *= ADC_Value[1];
+		result *= (u32)MOTOR_STANDARD_VG;
+		result /= (u32)FULL_SCALE;
+
+	}else if (pid == KIND_EDM_VG)
+	{
+		result *= ADC_Value[0];
+		result *= (u32)EDM_STANDARD_VG;
+		result /= (u32)FULL_SCALE;
+	}
+	pState[0] = result;   //result得值一定小于120
+	
+	return VG_VALUE_WORD;
+}
+
+
+/*
+*每次变压分十次完成变压，电压最高目前是80V左右
+*
+*/
+u16 H_voltage_switch(void)
+{
+	HV_SWITCH_ANALY *m_data = (HV_SWITCH_ANALY *)UART_R_DATA_P;
+	int i = 0;
+	float32 count = 0.0;
+	float32 grid_volage = m_data->vol / 10.0;
+	
+	for (i=0; i<NUM_TRANSFOR; i++)
+	{
+		count += grid_volage;
+		dac_7611ub_trans(count * 1000);
+		msleep(100);
+	}
+	
+
+	hv_enable(m_data->EN);	 //使能放电开关
+
+	return NOERROR;
+}
+
+
+
+

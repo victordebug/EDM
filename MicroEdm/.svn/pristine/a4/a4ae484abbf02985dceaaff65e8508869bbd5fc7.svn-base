@@ -1,0 +1,79 @@
+#include "Command.h"
+#include "Frame.h"
+#include "cmd.h"
+#include "ADC.h"
+#include "CMD_GetStateEx.h"
+#include "data_analy.h"
+
+u16  g_ushReceiveBuffer[MAX_LENGTH_R] ; 
+u16  g_ushSentBuffer[MAX_LENGTH_S]; 
+u16* g_pReceiveBuffer = (u16*)g_ushReceiveBuffer;
+u16* g_pSentBuffer = (u16*)g_ushSentBuffer;
+u8* g_pSentBufferU8 = (u8*)g_ushSentBuffer;
+
+u16  g_ushReceiveNum; 
+u16  g_ushSentNum;
+
+
+U16 ParseCmd1()
+{
+	U16* pPara = (U16*)UART_R_DATA_P;
+	if(UART_R_LENGTH != CMD_CMD1_BYTE)
+		return ECMD_LENGTH;
+	return NOERROR;
+}
+
+U16 ParseCmd2()
+{
+	U16* pPara = (U16*)UART_R_DATA_P;
+	if(UART_R_LENGTH != CMD_CMD2_BYTE)
+		return ECMD_LENGTH;
+	return NOERROR;
+}
+
+u16 CommandParse(void)                  //command parse
+{
+	u16 retVal = BAD_COMMAND;
+	switch(g_pReceiveBuffer[FRAME_COMMAND_INDEX])
+	{	
+		case CMD_GETSTATE_EX:
+			retVal = ParseGetState_Ex();
+			break;
+//		case CMD_FUNCTION_EX:
+//			retVal = ParseFunction_Ex();
+//			break;	
+		case CMD_CMD1:
+			retVal = ParseCmd1();
+			break;	
+		case CMD_CMD2:
+			retVal = ParseCmd2();
+			break;	
+		case CMD_DC_MOTOR_ANALY:
+			retVal = data_analy_DC_motor();
+			break;
+		case CMD_Z_MOTOR_ANALY:
+			retVal = data_analy_Z_motor();
+			break;
+		case CMD_RC_PULSE_ANALY:
+			retVal = data_analy_RC_pulse();
+			break;
+		case CMD_PWM_PULSE_ANALY:
+			retVal = data_analy_PWM_pulse();
+			break;
+		default:
+			break;
+	}
+	return retVal;
+}
+
+
+
+
+
+
+
+
+
+
+
+

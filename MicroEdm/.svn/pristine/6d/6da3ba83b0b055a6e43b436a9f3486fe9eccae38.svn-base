@@ -1,0 +1,145 @@
+#include "edm.h"
+#include "fsmc.h"
+#include "Command.h"
+#include "stdtypes.h"
+
+u16 en_pwm_command = 0;  
+u16 en_rc_command = 0;
+
+/*RC*/
+u16 edm_rc(void)
+{
+	RC_EDM *m_rc_edm = NULL;
+	ANALY_RC_EDM *analy_rc = (ANALY_RC_EDM *)UART_R_DATA_P;
+		
+	switch (analy_rc->ID)
+	{
+		case ID_RC_0:
+			en_rc_command |= EN_RC_0;
+			break;
+		case ID_RC_1:
+			en_rc_command |= EN_RC_1;
+			break;
+		case ID_RC_2:
+			en_rc_command |= EN_RC_2;
+			break;
+		case ID_RC_3:
+			en_rc_command |= EN_RC_3;
+			break;
+		default :
+			break;
+	}
+
+	m_rc_edm->ID = analy_rc->ID;
+	m_rc_edm->command = en_rc_command;
+	m_rc_edm->short_threshold = analy_rc->short_threshold;
+
+	FPGA_EDM_RC(m_rc_edm);
+
+	return NOERROR;
+}
+
+u16 edm_rc_stop(void)
+{
+	RC_EDM *m_rc_edm = NULL;
+	ANALY_RC_EDM *analy_rc = (ANALY_RC_EDM *)UART_R_DATA_P;
+	
+	switch (analy_rc->ID)
+	{
+		case ID_RC_0:
+			en_rc_command &= ~EN_RC_0;
+			break;
+		case ID_RC_1:
+			en_rc_command &= ~EN_RC_1;
+			break;
+		case ID_RC_2:
+			en_rc_command &= ~EN_RC_2;
+			break;
+		case ID_RC_3:
+			en_rc_command &= ~EN_RC_3;
+			break;
+		default :
+			break;
+	}
+
+	m_rc_edm->ID = analy_rc->ID;
+	m_rc_edm->command = en_rc_command;
+
+	FPGA_EDM_RC(m_rc_edm);
+
+	return NOERROR;
+
+}
+
+
+/*Âö³å·Åµç*/
+u16 edm_pwm(void)
+{
+	PWD_EDM *pwm_edm;
+	ANALY_PWM_EDM *analy_pwm = (ANALY_PWM_EDM *)UART_R_DATA_P;
+
+	switch (analy_pwm->ID)
+	{
+		case ID_PWM_0:
+			en_pwm_command |= EN_PWM_0;
+			break;
+		case ID_PWM_1:
+			en_pwm_command |= EN_PWM_1;
+			break;
+		case ID_PWM_2:
+			en_pwm_command |= EN_PWM_2;
+			break;
+		case ID_PWM_3:
+			en_pwm_command |= EN_PWM_3;
+			break;
+		default :
+			break;
+	}
+	pwm_edm->command_pwm = en_pwm_command;
+	pwm_edm->pulse_command = en_pwm_command;
+	pwm_edm->period_pwm = analy_pwm->period_pwm;
+	pwm_edm->duty_pwm = analy_pwm->duty_pwm;
+	pwm_edm->deadZone_pwm = analy_pwm->deadZone_pwm;
+	pwm_edm->ID = analy_pwm->ID;
+	pwm_edm->pulse_threshold = analy_pwm->pulse_threshold;
+
+	FPGA_EDM_PWM(pwm_edm);
+
+	return NOERROR;
+}
+
+
+u16 edm_pwm_stop(void)
+{
+	PWD_EDM *pwm_edm;
+	ANALY_PWM_EDM *analy_pwm = (ANALY_PWM_EDM *)UART_R_DATA_P;
+	
+	switch (analy_pwm->ID)
+	{
+		case ID_PWM_0:
+			en_pwm_command &= ~EN_PWM_0;
+			break;
+		case ID_PWM_1:
+			en_pwm_command &= ~EN_PWM_1;
+			break;
+		case ID_PWM_2:
+			en_pwm_command &= ~EN_PWM_2;
+			break;
+		case ID_PWM_3:
+			en_pwm_command &= ~EN_PWM_3;
+			break;
+		default :
+			break;
+	}
+	pwm_edm->command_pwm = en_pwm_command;
+	pwm_edm->pulse_command = en_pwm_command;
+	pwm_edm->ID = analy_pwm->ID;
+
+	FPGA_EDM_PWM(pwm_edm);
+
+	return NOERROR;
+}
+
+
+
+

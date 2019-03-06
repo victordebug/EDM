@@ -1,0 +1,59 @@
+#ifndef _COMMAND_H
+#define _COMMAND_H
+
+#include "stm32f10x.h"
+#include "cmd.h"
+#include "UART.h"
+#include "stdtypes.h"
+
+#define  MAX_LENGTH_R         64
+#define  MAX_LENGTH_S         64
+
+#define  FRAME_HEAD_INDEX     0
+#define  FRAME_ADDRESS_INDEX  1
+#define  FRAME_LENGTH_INDEX   2
+#define  FRAME_COMMAND_INDEX  3
+#define  FRAME_DATA_INDEX     4 
+
+#define BAD_COMMAND			 		0x0001		
+#define BAD_COMMAND_LENGTH			0x0004		
+#define BAD_FRAME_CHECKSUM			0x0080		
+#define BAD_COMMAND_UNKNOWN			0x00FF	
+
+extern u16* g_pReceiveBuffer ;
+extern u16* g_pSentBuffer ;
+extern u8* g_pSentBufferU8 ;
+
+extern u16  g_ushReceiveBuffer[MAX_LENGTH_R] ; 
+extern u16  g_ushSentBuffer[MAX_LENGTH_S]; 
+extern u16  g_ushReceiveNum; 
+extern u16  g_ushSentNum;
+
+extern u8   SendSum ;
+/* Function define */
+extern u16 CommandParse(void);               //command parse
+
+#define UART_R_CMD								g_pReceiveBuffer[FRAME_COMMAND_INDEX]
+#define UART_R_DATA_P							(&g_pReceiveBuffer[FRAME_DATA_INDEX])
+#define UART_R_DATAn_P(word)			       (&g_pReceiveBuffer[FRAME_DATA_INDEX+(word)])
+#define UART_R_LENGTH							g_pReceiveBuffer[FRAME_LENGTH_INDEX]
+#define UART_R_DATAn(idx)                       g_pReceiveBuffer[FRAME_DATA_INDEX+(idx)]
+
+#define UART_S_CMD			      	g_pSentBuffer[FRAME_COMMAND_INDEX]
+#define UART_S_DATA_P				(&g_pSentBuffer[FRAME_DATA_INDEX])
+#define UART_S_LENGTH				g_pSentBuffer[FRAME_LENGTH_INDEX]
+
+
+#define CMD_CMD1							0x1080		
+#define CMD_CMD1_BYTE  						byteof(U32)
+	
+#define CMD_CMD2							0x1082		
+#define CMD_CMD2_BYTE  						byteof(U32)
+
+
+
+
+
+
+
+#endif /* _COMMAND_H */

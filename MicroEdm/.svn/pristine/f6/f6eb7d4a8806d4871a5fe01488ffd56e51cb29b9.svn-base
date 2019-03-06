@@ -1,0 +1,46 @@
+#include "voltage.h"
+#include "ADC.h"
+#include "dac_7611ub.h"
+
+#define MOTOR_STANDARD_VG    24
+#define EDM_STANDARD_VG      24
+
+#define FULL_SCALE 		     4096				//12-bit resolution 
+
+
+void voltage_init(void)
+{
+	ADC1_Init();
+	dac_7611ub_config_init();
+}
+
+
+u16 get_voltage(u8 vo_pid)
+{
+	u32 result = 1;
+	if (vo_pid == KIND_MOTOR_VG)
+	{
+		result *= ADC_Value[1];
+		result *= (u32)MOTOR_STANDARD_VG;
+		result /= (u32)FULL_SCALE;
+
+	}else if (vo_pid == KIND_EDM_VG)
+	{
+		result *= ADC_Value[0];
+		result *= (u32)EDM_STANDARD_VG;
+		result /= (u32)FULL_SCALE;
+	}
+	return result;
+}
+
+
+
+void ctl_voltage(u32 ctl_vg)
+{
+	hv_enable(HV_ON);   //使能放电开关
+	dac_7611ub_trans(ctl_vg);
+}
+
+
+
+
