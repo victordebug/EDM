@@ -130,7 +130,7 @@ typedef struct analy_pwm_edm
 
 typedef struct anlay_EDM
 {
-	DC_MOTOR                 EDM_dc_motor;        //旋转电机
+	DC_MOTOR_ANALYSIS        EDM_dc_motor;        //旋转电机
 	ANALY_RC_EDM             EDM_rc;              //RC放电配置
 	ANALY_PWM_EDM            EDM_pwm;             //脉冲放电配置
 	u16                      option_EDM;          //放电方式选择
@@ -146,8 +146,6 @@ typedef struct anlay_EDM
 	u32                      high_Hp;             //超出高度
 }ANALY_EDM;
 
-
-ANALY_EDM *Data_analy_EDM = NULL;
 
 
 

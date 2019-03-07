@@ -26,8 +26,7 @@
 #define ANALY_MOTOR_ID_2       0x0003
 #define ANALY_MOTOR_ID_3       0x0004
 
-#define ANALY_Z_MOTOR_DIR_MAX  0x0001
-#define ANALY_Z_MOTOR_DIR_MIN  0x0002
+
 
 #define ANALY_MOTOR_EN_ON      0x0001
 #define ANALY_MOTOR_EN_OFF     0x0002

@@ -17,6 +17,8 @@
 
 
 
+OS_STK led_task_stk[LED_TASK_STK_SIZE]; //定义栈
+OS_STK main_task_stk[MAIN_TASK_STK_SIZE]; //定义栈
 
 
 
@@ -63,14 +65,14 @@ void Task_Comm(void * pArg)
 	{
 		 printf("创建Task_Led任务失败\r\n");
 	}
-
+/*
 	ret = OSTaskCreate(Task_Motor_Find_zero,(void *)0,
 			&motor_find_zero_task_stk[MOTOR_FIND_ZERO_TASK_STK_SIZE-1], MOTOR_FIND_ZERO_PRIO);
 	if (ret != 0)
 	{
 		 printf("创建Task_Motor_Find_zero任务失败\r\n");
 	}
-
+*/
 	ret = OSTaskCreate(Task_Main,(void *)0,
 			&main_task_stk[MAIN_TASK_STK_SIZE-1], MAIN_TASK_PRIO);
 	if (ret != 0)
@@ -85,17 +87,17 @@ void Task_Comm(void * pArg)
 
 void Task_Main(void * pArg)
 {
-
+/*
 	Z_MOTOR_MOVETO_ANALYSIS z_motor_analy;
 	z_motor_analy.ID = 0;
-	z_motor_analy.Dir = ANALY_Z_MOTOR_DIR_NEG;
+	z_motor_analy.Dir = ANALY_Z_MOTOR_DIR_MIN;
 	z_motor_analy.Unit = 0;
 	z_motor_analy.A    = 1;
 	z_motor_analy.V    = 5;
 	z_motor_analy.Pos  = 350;
 
 	z_motor_moveTo(&z_motor_analy);
-
+*/
 	
 	while (1)
 	{
@@ -109,29 +111,18 @@ void Task_Main(void * pArg)
 
 		OSTimeDlyHMSM(0,0,1,0);*/
 
-		u8 txt_buf[] = {"0x12345"};
-		u8 buf_size = sizeof(txt_buf);
-		u8 m_read_buf[8] = {0};
-		char m_read_cBuf;
 
-		EEPROM_24LC16B_WritePage(0x11 ,(u8 *)txt_buf);
+		
+		u32 write_data[3] = {0x12345678, 0xDDCCBBAA, 0xABCDDCBA};
+		u32 read_data[3] = {0};
+		int i=0;
+		u8 read_u8 = 0;		
+		
+		EEPROM_24LC16B_WriteBuf(0x00, write_data, 3);
+		OSTimeDlyHMSM(0,0,1,0);
+		EEPROM_24LC16B_ReadBuf(0x00, read_data, 3);
 		OSTimeDlyHMSM(0,0,1,0);
 		
-		EEPROM_24LC16B_ReadBuf(0x11, (u8 *)m_read_buf, buf_size);
-		printf("read--->%s\r\n", m_read_buf);
-		OSTimeDlyHMSM(0,0,1,0);
-
-		printf("juge-->%d\r\n", (m_read_buf == "        0x12345"));
-
-/*
-		EEPROM_24LC16B_WriteByte(0x30, 'c');
-		OSTimeDlyHMSM(0,0,1,0);
-
-		m_read_cBuf = EEPROM_24LC16B_ReadByte(0x30);
-		printf("read--->%c\r\n", m_read_cBuf);
-		OSTimeDlyHMSM(0,0,1,0);
-*/
-
 	}
 }
 

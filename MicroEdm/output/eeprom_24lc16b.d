@@ -22,3 +22,4 @@
 ..\output\eeprom_24lc16b.o: ..\dirver\i2c.h
 ..\output\eeprom_24lc16b.o: ..\dirver\gpio.h
 ..\output\eeprom_24lc16b.o: ..\user\stdtypes.h
+..\output\eeprom_24lc16b.o: ..\APP\config.h

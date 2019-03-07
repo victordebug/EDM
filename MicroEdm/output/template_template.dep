@@ -493,7 +493,7 @@ I (..\lib\FWLIB\inc\stm32f10x_rtc.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 F (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)()
-F (..\user\main.c)(0x5C7393D5)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\main.o --omf_browse ..\output\main.crf --depend ..\output\main.d)
+F (..\user\main.c)(0x5C7F79C5)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\main.o --omf_browse ..\output\main.crf --depend ..\output\main.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588B8344)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (..\UCOSII\CONFIG\includes.h)(0x5C4E733B)
@@ -518,7 +518,7 @@ I (..\UCOSII\CORE\ucos_ii.h)(0x5C4E733B)
 I (..\UCOSII\CONFIG\os_cfg.h)(0x5C4E733B)
 I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
 I (..\BSP\bsp.h)(0x5C4E733B)
-I (..\APP\app.h)(0x5C739A22)
+I (..\APP\app.h)(0x5C7F7C24)
 I (..\dirver\systick.h)(0x5C4E733B)
 I (..\dirver\uart.h)(0x5C4E733B)
 I (..\dirver\GPIO.h)(0x5C78DF2B)
@@ -527,12 +527,13 @@ I (..\user\stdtypes.h)(0x5C4E733A)
 I (..\user\MemoryCopy.h)(0x5C4E733A)
 I (..\user\led.h)(0x5C4E733A)
 I (..\dirver\fsmc.h)(0x5C6A7A3D)
-I (..\user\edm.h)(0x5C738751)
-I (..\user\motor.h)(0x5C749883)
-I (..\APP\config.h)(0x5C738F81)
-I (..\user\eeprom_24lc16b.h)(0x5C77ACBC)
+I (..\user\edm.h)(0x5C7F7CB3)
+I (..\user\motor.h)(0x5C7F7A98)
+I (..\APP\config.h)(0x5C7F737E)
+I (..\user\eeprom_24lc16b.h)(0x5C7F7B33)
 I (..\user\voltage.h)(0x5C7386D7)
 I (..\user\ADC.h)(0x5C4E733A)
+I (..\dirver\dac_7611ub.h)(0x5C68C062)
 F (..\user\stm32f10x_conf.h)(0x5C4E733A)()
 F (..\user\stm32f10x_it.c)(0x5C4E733A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\stm32f10x_it.o --omf_browse ..\output\stm32f10x_it.crf --depend ..\output\stm32f10x_it.d)
 I (..\user\stm32f10x_it.h)(0x5C4E733A)
@@ -561,9 +562,9 @@ I (..\UCOSII\CORE\ucos_ii.h)(0x5C4E733B)
 I (..\UCOSII\CONFIG\os_cfg.h)(0x5C4E733B)
 I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
 I (..\BSP\bsp.h)(0x5C4E733B)
-I (..\APP\app.h)(0x5C739A22)
+I (..\APP\app.h)(0x5C7F7C24)
 F (..\user\stm32f10x_it.h)(0x5C4E733A)()
-F (..\user\Command.c)(0x5C738A0A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\command.o --omf_browse ..\output\command.crf --depend ..\output\command.d)
+F (..\user\Command.c)(0x5C7F793A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\command.o --omf_browse ..\output\command.crf --depend ..\output\command.d)
 I (..\user\Command.h)(0x5C6B90AB)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
 I (..\lib\CMSIS\core_cm3.h)(0x5C4E733B)
@@ -590,12 +591,12 @@ I (..\dirver\GPIO.h)(0x5C78DF2B)
 I (..\user\stdtypes.h)(0x5C4E733A)
 I (..\user\ADC.h)(0x5C4E733A)
 I (..\user\CMD_GetStateEx.h)(0x5C4E733A)
-I (..\user\data_analy.h)(0x5C67AAD9)
-I (..\APP\config.h)(0x5C738F81)
+I (..\user\data_analy.h)(0x5C7F7A38)
+I (..\APP\config.h)(0x5C7F737E)
 I (..\user\voltage.h)(0x5C7386D7)
-I (..\user\edm.h)(0x5C738751)
-I (..\user\motor.h)(0x5C749883)
-I (..\user\eeprom_24lc16b.h)(0x5C77ACBC)
+I (..\user\edm.h)(0x5C7F7CB3)
+I (..\user\motor.h)(0x5C7F7A98)
+I (..\user\eeprom_24lc16b.h)(0x5C7F7B33)
 I (..\user\beep.h)(0x5C7386B2)
 F (..\user\Frame.c)(0x5C4E733A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\frame.o --omf_browse ..\output\frame.crf --depend ..\output\frame.d)
 I (..\user\Frame.h)(0x5C4E733A)
@@ -677,9 +678,9 @@ I (..\user\SystemState.h)(0x5C4E733A)
 I (..\user\MemoryCopy.h)(0x5C4E733A)
 I (..\user\ADC.h)(0x5C4E733A)
 I (..\dirver\fsmc.h)(0x5C6A7A3D)
-I (..\user\edm.h)(0x5C738751)
-I (..\user\motor.h)(0x5C749883)
-I (..\APP\config.h)(0x5C738F81)
+I (..\user\edm.h)(0x5C7F7CB3)
+I (..\user\motor.h)(0x5C7F7A98)
+I (..\APP\config.h)(0x5C7F737E)
 F (..\user\Memory_Copy.c)(0x5C4E733A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\memory_copy.o --omf_browse ..\output\memory_copy.crf --depend ..\output\memory_copy.d)
 I (..\user\MemoryCopy.h)(0x5C4E733A)
 I (..\user\stdtypes.h)(0x5C4E733A)
@@ -732,8 +733,8 @@ I (..\user\Command.h)(0x5C6B90AB)
 I (..\user\cmd.h)(0x5C4E733A)
 I (..\user\Frame.h)(0x5C4E733A)
 I (..\dirver\UART.h)(0x5C4E733B)
-F (..\user\edm.c)(0x5C738753)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\edm.o --omf_browse ..\output\edm.crf --depend ..\output\edm.d)
-I (..\user\edm.h)(0x5C738751)
+F (..\user\edm.c)(0x5C7F7CBB)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\edm.o --omf_browse ..\output\edm.crf --depend ..\output\edm.d)
+I (..\user\edm.h)(0x5C7F7CB3)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
 I (..\lib\CMSIS\core_cm3.h)(0x5C4E733B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -752,17 +753,21 @@ I (..\lib\FWLIB\inc\stm32f10x_rtc.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
-I (..\dirver\fsmc.h)(0x5C6A7A3D)
-I (..\user\motor.h)(0x5C749883)
-I (..\APP\config.h)(0x5C738F81)
+I (..\user\motor.h)(0x5C7F7A98)
+I (..\APP\config.h)(0x5C7F737E)
 I (..\user\stdtypes.h)(0x5C4E733A)
+I (..\dirver\fsmc.h)(0x5C6A7A3D)
 I (..\user\Command.h)(0x5C6B90AB)
 I (..\user\cmd.h)(0x5C4E733A)
 I (..\user\Frame.h)(0x5C4E733A)
 I (..\dirver\UART.h)(0x5C4E733B)
 I (..\dirver\GPIO.h)(0x5C78DF2B)
-F (..\user\eeprom_24lc16b.c)(0x5C7902B2)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\eeprom_24lc16b.o --omf_browse ..\output\eeprom_24lc16b.crf --depend ..\output\eeprom_24lc16b.d)
-I (..\user\eeprom_24lc16b.h)(0x5C77ACBC)
+I (..\user\voltage.h)(0x5C7386D7)
+I (..\dirver\dac_7611ub.h)(0x5C68C062)
+I (..\APP\app.h)(0x5C7F7C24)
+I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
+F (..\user\eeprom_24lc16b.c)(0x5C7F97D2)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\eeprom_24lc16b.o --omf_browse ..\output\eeprom_24lc16b.crf --depend ..\output\eeprom_24lc16b.d)
+I (..\user\eeprom_24lc16b.h)(0x5C7F7B33)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
 I (..\lib\CMSIS\core_cm3.h)(0x5C4E733B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -784,6 +789,7 @@ I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
 I (..\dirver\i2c.h)(0x5C78DE21)
 I (..\dirver\gpio.h)(0x5C78DF2B)
 I (..\user\stdtypes.h)(0x5C4E733A)
+I (..\APP\config.h)(0x5C7F737E)
 F (..\user\led.c)(0x5C4E733A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\led.o --omf_browse ..\output\led.crf --depend ..\output\led.d)
 I (..\user\led.h)(0x5C4E733A)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
@@ -805,8 +811,8 @@ I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
 I (..\dirver\gpio.h)(0x5C78DF2B)
-F (..\user\motor.c)(0x5C74AD17)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\motor.o --omf_browse ..\output\motor.crf --depend ..\output\motor.d)
-I (..\user\motor.h)(0x5C749883)
+F (..\user\motor.c)(0x5C7F7C1E)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\motor.o --omf_browse ..\output\motor.crf --depend ..\output\motor.d)
+I (..\user\motor.h)(0x5C7F7A98)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
 I (..\lib\CMSIS\core_cm3.h)(0x5C4E733B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -825,16 +831,18 @@ I (..\lib\FWLIB\inc\stm32f10x_rtc.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
-I (..\APP\config.h)(0x5C738F81)
+I (..\APP\config.h)(0x5C7F737E)
 I (..\user\stdtypes.h)(0x5C4E733A)
 I (..\dirver\fsmc.h)(0x5C6A7A3D)
-I (..\user\edm.h)(0x5C738751)
-I (..\user\data_analy.h)(0x5C67AAD9)
+I (..\user\edm.h)(0x5C7F7CB3)
+I (..\user\data_analy.h)(0x5C7F7A38)
 I (..\user\command.h)(0x5C6B90AB)
 I (..\user\cmd.h)(0x5C4E733A)
 I (..\user\Frame.h)(0x5C4E733A)
 I (..\dirver\UART.h)(0x5C4E733B)
 I (..\dirver\GPIO.h)(0x5C78DF2B)
+I (..\APP\app.h)(0x5C7F7C24)
+I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
 F (..\user\voltage.c)(0x5C74F02F)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\voltage.o --omf_browse ..\output\voltage.crf --depend ..\output\voltage.d)
 I (..\user\voltage.h)(0x5C7386D7)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
@@ -864,7 +872,7 @@ I (..\user\cmd.h)(0x5C4E733A)
 I (..\user\Frame.h)(0x5C4E733A)
 I (..\dirver\UART.h)(0x5C4E733B)
 F (..\user\data_analy.c)(0x5C67AAE0)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\data_analy.o --omf_browse ..\output\data_analy.crf --depend ..\output\data_analy.d)
-I (..\user\data_analy.h)(0x5C67AAD9)
+I (..\user\data_analy.h)(0x5C7F7A38)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
 I (..\lib\CMSIS\core_cm3.h)(0x5C4E733B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -883,15 +891,15 @@ I (..\lib\FWLIB\inc\stm32f10x_rtc.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
-I (..\APP\config.h)(0x5C738F81)
+I (..\APP\config.h)(0x5C7F737E)
 I (..\user\Command.h)(0x5C6B90AB)
 I (..\user\cmd.h)(0x5C4E733A)
 I (..\user\Frame.h)(0x5C4E733A)
 I (..\dirver\UART.h)(0x5C4E733B)
 I (..\dirver\GPIO.h)(0x5C78DF2B)
 I (..\user\stdtypes.h)(0x5C4E733A)
-I (..\user\motor.h)(0x5C749883)
-I (..\user\edm.h)(0x5C738751)
+I (..\user\motor.h)(0x5C7F7A98)
+I (..\user\edm.h)(0x5C7F7CB3)
 F (..\user\myString.c)(0x5C6907CD)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\mystring.o --omf_browse ..\output\mystring.crf --depend ..\output\mystring.d)
 I (..\user\myString.h)(0x5C690D43)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
@@ -988,12 +996,12 @@ I (..\UCOSII\CORE\ucos_ii.h)(0x5C4E733B)
 I (..\UCOSII\CONFIG\os_cfg.h)(0x5C4E733B)
 I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
 I (..\BSP\bsp.h)(0x5C4E733B)
-I (..\APP\app.h)(0x5C739A22)
+I (..\APP\app.h)(0x5C7F7C24)
 F (..\BSP\bsp.h)(0x5C4E733B)()
 F (..\dirver\queue.c)(0x5C4E733B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\queue.o --omf_browse ..\output\queue.crf --depend ..\output\queue.d)
 I (..\dirver\queue.h)(0x5C4E733B)
 F (..\dirver\queue.h)(0x5C4E733B)()
-F (..\dirver\systick.c)(0x5C4E733B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\systick.o --omf_browse ..\output\systick.crf --depend ..\output\systick.d)
+F (..\dirver\systick.c)(0x5C7E21A8)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\systick.o --omf_browse ..\output\systick.crf --depend ..\output\systick.d)
 I (..\dirver\systick.h)(0x5C4E733B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588B8344)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
@@ -1051,7 +1059,7 @@ I (..\UCOSII\CORE\ucos_ii.h)(0x5C4E733B)
 I (..\UCOSII\CONFIG\os_cfg.h)(0x5C4E733B)
 I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
 I (..\BSP\bsp.h)(0x5C4E733B)
-I (..\APP\app.h)(0x5C739A22)
+I (..\APP\app.h)(0x5C7F7C24)
 F (..\dirver\uart.h)(0x5C4E733B)()
 F (..\dirver\GPIO.c)(0x5C4E733B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\gpio.o --omf_browse ..\output\gpio.crf --depend ..\output\gpio.d)
 I (..\dirver\GPIO.h)(0x5C78DF2B)
@@ -1114,9 +1122,9 @@ I (..\lib\FWLIB\inc\stm32f10x_rtc.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
-I (..\user\edm.h)(0x5C738751)
-I (..\user\motor.h)(0x5C749883)
-I (..\APP\config.h)(0x5C738F81)
+I (..\user\edm.h)(0x5C7F7CB3)
+I (..\user\motor.h)(0x5C7F7A98)
+I (..\APP\config.h)(0x5C7F737E)
 I (..\user\stdtypes.h)(0x5C4E733A)
 I (..\dirver\gpio.h)(0x5C78DF2B)
 I (..\lib\FWLIB\inc\stm32f10x_fsmc.h)(0x5C4E733B)
@@ -1189,8 +1197,8 @@ I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
 I (..\dirver\gpio.h)(0x5C78DF2B)
-F (..\APP\app.c)(0x5C790407)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\app.o --omf_browse ..\output\app.crf --depend ..\output\app.d)
-I (..\APP\app.h)(0x5C739A22)
+F (..\APP\app.c)(0x5C7F987A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I ..\lib\FWLIB\inc -I ..\lib\CMSIS -I ..\user -I ..\dirver -I ..\UCOSII\CONFIG -I ..\UCOSII\CORE -I ..\UCOSII\PORT -I ..\BSP -I ..\APP-I.\RTE\_template-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\app.o --omf_browse ..\output\app.crf --depend ..\output\app.d)
+I (..\APP\app.h)(0x5C7F7C24)
 I (..\lib\CMSIS\stm32f10x.h)(0x5C4E733B)
 I (..\lib\CMSIS\core_cm3.h)(0x5C4E733B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -1209,24 +1217,24 @@ I (..\lib\FWLIB\inc\stm32f10x_rtc.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_usart.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\stm32f10x_tim.h)(0x5C4E733C)
 I (..\lib\FWLIB\inc\misc.h)(0x5C4E733B)
+I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
 I (..\dirver\systick.h)(0x5C4E733B)
 I (..\dirver\uart.h)(0x5C4E733B)
 I (..\dirver\GPIO.h)(0x5C78DF2B)
 I (..\UCOSII\CONFIG\includes.h)(0x5C4E733B)
 I (..\UCOSII\CORE\ucos_ii.h)(0x5C4E733B)
 I (..\UCOSII\CONFIG\os_cfg.h)(0x5C4E733B)
-I (..\UCOSII\PORT\os_cpu.h)(0x5C4E733B)
 I (..\BSP\bsp.h)(0x5C4E733B)
 I (..\user\Timer.h)(0x5C4E733A)
 I (..\user\stdtypes.h)(0x5C4E733A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x588B8344)
 I (..\dirver\fsmc.h)(0x5C6A7A3D)
-I (..\user\edm.h)(0x5C738751)
-I (..\user\motor.h)(0x5C749883)
-I (..\APP\config.h)(0x5C738F81)
-I (..\user\eeprom_24lc16b.h)(0x5C77ACBC)
+I (..\user\edm.h)(0x5C7F7CB3)
+I (..\user\motor.h)(0x5C7F7A98)
+I (..\APP\config.h)(0x5C7F737E)
+I (..\user\eeprom_24lc16b.h)(0x5C7F7B33)
 I (..\user\voltage.h)(0x5C7386D7)
 I (..\user\ADC.h)(0x5C4E733A)
-I (..\user\data_analy.h)(0x5C67AAD9)
+I (..\user\data_analy.h)(0x5C7F7A38)
 I (..\dirver\i2c.h)(0x5C78DE21)

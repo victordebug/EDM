@@ -3,8 +3,14 @@
 #include "Command.h"
 #include "stdtypes.h"
 #include "motor.h"
+#include "voltage.h"
+#include "dac_7611ub.h"
+#include "app.h"
 
 
+OS_STK EDM_task_stk[EDM_TASK_STK_SIZE];
+
+ANALY_EDM *Data_analy_EDM = NULL;
 
 
 u16 en_pwm_command = 0;  

@@ -19,12 +19,16 @@
 ..\output\edm.o: ..\lib\FWLIB\inc\stm32f10x_usart.h
 ..\output\edm.o: ..\lib\FWLIB\inc\stm32f10x_tim.h
 ..\output\edm.o: ..\lib\FWLIB\inc\misc.h
-..\output\edm.o: ..\dirver\fsmc.h
 ..\output\edm.o: ..\user\motor.h
 ..\output\edm.o: ..\APP\config.h
 ..\output\edm.o: ..\user\stdtypes.h
+..\output\edm.o: ..\dirver\fsmc.h
 ..\output\edm.o: ..\user\Command.h
 ..\output\edm.o: ..\user\cmd.h
 ..\output\edm.o: ..\user\Frame.h
 ..\output\edm.o: ..\dirver\UART.h
 ..\output\edm.o: ..\dirver\GPIO.h
+..\output\edm.o: ..\user\voltage.h
+..\output\edm.o: ..\dirver\dac_7611ub.h
+..\output\edm.o: ..\APP\app.h
+..\output\edm.o: ..\UCOSII\PORT\os_cpu.h

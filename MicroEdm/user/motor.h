@@ -89,6 +89,12 @@
 #define STOP_TO_ZERO_VALUE		0
 #define STOP_AT_ONCE            1
 
+#define ANALY_Z_MOTOR_DIR_MAX  0x0001
+#define ANALY_Z_MOTOR_DIR_MIN  0x0002
+
+
+#define MAX_TIME_FIND_ZERO      60    //寻位最长时间
+
 
 
 //步进电机控制寄存器

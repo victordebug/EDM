@@ -11,6 +11,8 @@
 #include "voltage.h"
 #include "ADC.h"
 #include "config.h"
+#include "dac_7611ub.h"
+
 
 /*******************设置任务优先级*******************/
 #define STARTUP_TASK_PRIO 1

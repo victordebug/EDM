@@ -28,7 +28,7 @@
 #define SYSTEM_IS_ERROR                             (0x01<<1) //系统故障
 #define SYSTEM_IS_WORK                              (0x01<<2) //系统工作状态
 
-
+#define SIZE_U32_DATA                                sizeof(u32)
 
 #endif
 

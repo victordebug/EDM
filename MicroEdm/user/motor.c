@@ -4,6 +4,7 @@
 #include "data_analy.h"
 #include "command.h"
 #include "Cmd.h"
+#include "app.h"
 
 //步进电机本地定义
 ZSCAN_MOTOR *zscan_motor0 = NULL;
@@ -25,6 +26,7 @@ Q27 ZSCAN_MMpS2SV(DB32 dbMMpS);
 U32 ZSCAN_MMpS2SVV(DB32 dbMMpSS);
 u32 ZScan_CalcSubMP(U32 ulV, U32 ulA, U32 ulPos, u16 dir, u32 mp_cur);
 
+OS_STK motor_find_zero_task_stk[MOTOR_FIND_ZERO_TASK_STK_SIZE]; 
 
 
 
@@ -227,11 +229,11 @@ u16 z_motor_moveTo(Z_MOTOR_MOVETO_ANALYSIS *z_motor_analy)
 	
 	z_motor.motor_control.all_command |= BIT_Z_MOTOR_CTRL_SERVO_ENABLE;
 	z_motor.motor_control.all_command |= BIT_Z_MOTOR_CTRL_PULSE_ENABLE;
-	if (z_motor_analy->Dir== ANALY_Z_MOTOR_DIR_POS)
+	if (z_motor_analy->Dir== ANALY_Z_MOTOR_DIR_MAX)
 	{
 		z_motor.motor_control.all_command |= BIT_Z_MOTOR_CTRL_DIR;
 		m_s = m_location_targ + map_cur;
-	}else if (z_motor_analy->Dir == ANALY_Z_MOTOR_DIR_NEG)
+	}else if (z_motor_analy->Dir == ANALY_Z_MOTOR_DIR_MIN)
 	{
 		z_motor.motor_control.all_command &= ~BIT_Z_MOTOR_CTRL_DIR;
 		m_s = map_cur - m_location_targ;

@@ -30,14 +30,16 @@
 
 #define MAXROM_24LC16B    (2048)
 
+#define MAXLEN_24LC16B    (512)
+
 #define ADDR_24LC16B      (0xA0)
 
 
 void EEPROM_24LC16B_Init(void);
 u8 EEPROM_24LC16B_ReadByte(u16 addr);
 void EEPROM_24LC16B_WriteByte(u16 addr, u8 data);
-void EEPROM_24LC16B_ReadBuf(u16 addr, u8 *buf, u16 len);
-void EEPROM_24LC16B_WriteBuf(u16 addr, u8 *buf, u16 len);
+void EEPROM_24LC16B_ReadBuf(u16 addr, u32 *buf, u16 len);
+void EEPROM_24LC16B_WriteBuf(u16 addr, u32 *buf, u16 len);
 void EEPROM_24LC16B_WritePage(u16 addr, u8 *buf);
 
 u16 update_config(void);

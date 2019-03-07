@@ -39,3 +39,4 @@
 ..\output\main.o: ..\user\eeprom_24lc16b.h
 ..\output\main.o: ..\user\voltage.h
 ..\output\main.o: ..\user\ADC.h
+..\output\main.o: ..\dirver\dac_7611ub.h

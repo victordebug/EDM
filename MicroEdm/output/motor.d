@@ -29,3 +29,5 @@
 ..\output\motor.o: ..\user\Frame.h
 ..\output\motor.o: ..\dirver\UART.h
 ..\output\motor.o: ..\dirver\GPIO.h
+..\output\motor.o: ..\APP\app.h
+..\output\motor.o: ..\UCOSII\PORT\os_cpu.h

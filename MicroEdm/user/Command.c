@@ -79,7 +79,7 @@ u16 CommandParse(void)                  //command parse
 			retVal = z_motor_moveTo(z_motor_moveto_analy);
 			break;
 		case CMD_Z_MOTOR_FINDZERO:
-			retVal = z_motor_findZero();
+			//retVal = z_motor_findZero();
 			break;
 		case CMD_Z_MOTOR_STOP:
 			z_motor_stop_analy = (Z_MOTOR_STOP_ANALYSIS *)UART_R_DATA_P;

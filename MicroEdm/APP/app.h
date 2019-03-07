@@ -2,6 +2,7 @@
 #define __APP_H
 
 #include "stm32f10x.h"
+#include "os_cpu.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,16 +21,8 @@ extern "C" {
 #define MOTOR_FIND_ZERO_TASK_STK_SIZE  0x0FFF 
 #define EDM_TASK_STK_SIZE              0x0FFF
 
-OS_STK led_task_stk[LED_TASK_STK_SIZE]; //定义栈
-OS_STK main_task_stk[MAIN_TASK_STK_SIZE]; //定义栈
-OS_STK motor_find_zero_task_stk[MOTOR_FIND_ZERO_TASK_STK_SIZE]; 
-OS_STK EDM_task_stk[EDM_TASK_STK_SIZE];
 
 
-
-
-
-#define MAX_TIME_FIND_ZERO      60    //寻位最长时间
 
 
 extern u16 system_state;

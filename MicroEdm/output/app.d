@@ -19,13 +19,13 @@
 ..\output\app.o: ..\lib\FWLIB\inc\stm32f10x_usart.h
 ..\output\app.o: ..\lib\FWLIB\inc\stm32f10x_tim.h
 ..\output\app.o: ..\lib\FWLIB\inc\misc.h
+..\output\app.o: ..\UCOSII\PORT\os_cpu.h
 ..\output\app.o: ..\dirver\systick.h
 ..\output\app.o: ..\dirver\uart.h
 ..\output\app.o: ..\dirver\GPIO.h
 ..\output\app.o: ..\UCOSII\CONFIG\includes.h
 ..\output\app.o: ..\UCOSII\CORE\ucos_ii.h
 ..\output\app.o: ..\UCOSII\CONFIG\os_cfg.h
-..\output\app.o: ..\UCOSII\PORT\os_cpu.h
 ..\output\app.o: ..\BSP\bsp.h
 ..\output\app.o: ..\user\Timer.h
 ..\output\app.o: ..\user\stdtypes.h
