@@ -20,7 +20,10 @@
 ..\output\motor.o: ..\lib\FWLIB\inc\stm32f10x_tim.h
 ..\output\motor.o: ..\lib\FWLIB\inc\misc.h
 ..\output\motor.o: ..\APP\config.h
+..\output\motor.o: ..\user\AT24CXX.h
 ..\output\motor.o: ..\user\stdtypes.h
+..\output\motor.o: ..\dirver\gpio.h
+..\output\motor.o: ..\user\Timer.h
 ..\output\motor.o: ..\dirver\fsmc.h
 ..\output\motor.o: ..\user\edm.h
 ..\output\motor.o: ..\user\data_analy.h
@@ -28,6 +31,5 @@
 ..\output\motor.o: ..\user\cmd.h
 ..\output\motor.o: ..\user\Frame.h
 ..\output\motor.o: ..\dirver\UART.h
-..\output\motor.o: ..\dirver\GPIO.h
 ..\output\motor.o: ..\APP\app.h
 ..\output\motor.o: ..\UCOSII\PORT\os_cpu.h

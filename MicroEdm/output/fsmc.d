@@ -22,7 +22,9 @@
 ..\output\fsmc.o: ..\user\edm.h
 ..\output\fsmc.o: ..\user\motor.h
 ..\output\fsmc.o: ..\APP\config.h
+..\output\fsmc.o: ..\user\AT24CXX.h
 ..\output\fsmc.o: ..\user\stdtypes.h
 ..\output\fsmc.o: ..\dirver\gpio.h
+..\output\fsmc.o: ..\user\Timer.h
 ..\output\fsmc.o: ..\lib\FWLIB\inc\stm32f10x_fsmc.h
 ..\output\fsmc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

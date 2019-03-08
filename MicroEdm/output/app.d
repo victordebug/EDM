@@ -35,6 +35,7 @@
 ..\output\app.o: ..\user\edm.h
 ..\output\app.o: ..\user\motor.h
 ..\output\app.o: ..\APP\config.h
+..\output\app.o: ..\user\AT24CXX.h
 ..\output\app.o: ..\user\eeprom_24lc16b.h
 ..\output\app.o: ..\user\voltage.h
 ..\output\app.o: ..\user\ADC.h

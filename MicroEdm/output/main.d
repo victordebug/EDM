@@ -36,6 +36,8 @@
 ..\output\main.o: ..\user\edm.h
 ..\output\main.o: ..\user\motor.h
 ..\output\main.o: ..\APP\config.h
+..\output\main.o: ..\user\AT24CXX.h
+..\output\main.o: ..\user\Timer.h
 ..\output\main.o: ..\user\eeprom_24lc16b.h
 ..\output\main.o: ..\user\voltage.h
 ..\output\main.o: ..\user\ADC.h

@@ -22,12 +22,34 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\爱司凯项目\MicroEdm\project\template.uvprojx
-Project File Date:  02/17/2019
+Project File Date:  03/08/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'template'
-"..\output\theGodofFire.axf" - 0 Error(s), 0 Warning(s).
+compiling ParaInfo_V110.c...
+..\user\ParaInfo_V110.c(21): error:  #20: identifier "g_ulSN" is undefined
+  	
+ILEINFO(g_ulSN),
+..\user\ParaInfo_V110.c(21): error:  #44: expression must have pointer type
+  	
+ILEINFO(g_ulSN),
+..\user\ParaInfo_V110.c(22): error:  #20: identifier "g_ErrLogFile" is undefined
+  	
+ILEINFO(g_ErrLogFile),
+..\user\ParaInfo_V110.c(22): error:  #44: expression must have pointer type
+  	
+ILEINFO(g_ErrLogFile),
+..\user\ParaInfo_V110.c(23): error:  #20: identifier "g_MotorConfig" is undefined
+  	
+ILEINFO(g_MotorConfig),
+..\user\ParaInfo_V110.c(23): error:  #44: expression must have pointer type
+  	
+ILEINFO(g_MotorConfig),
+..\user\ParaInfo_V110.c(24): error:  #146: too many initializer values
+  	{0,0},						//剩余空间
+..\user\ParaInfo_V110.c: 0 warnings, 7 errors
+"..\output\theGodofFire.axf" - 7 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +72,8 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:00
+Target not created.
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

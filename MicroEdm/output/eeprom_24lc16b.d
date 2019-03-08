@@ -23,3 +23,5 @@
 ..\output\eeprom_24lc16b.o: ..\dirver\gpio.h
 ..\output\eeprom_24lc16b.o: ..\user\stdtypes.h
 ..\output\eeprom_24lc16b.o: ..\APP\config.h
+..\output\eeprom_24lc16b.o: ..\user\AT24CXX.h
+..\output\eeprom_24lc16b.o: ..\user\Timer.h

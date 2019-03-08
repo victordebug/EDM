@@ -33,3 +33,5 @@
 ..\output\cmd_getstateex.o: ..\user\edm.h
 ..\output\cmd_getstateex.o: ..\user\motor.h
 ..\output\cmd_getstateex.o: ..\APP\config.h
+..\output\cmd_getstateex.o: ..\user\AT24CXX.h
+..\output\cmd_getstateex.o: ..\user\Timer.h

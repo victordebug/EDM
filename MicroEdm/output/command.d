@@ -28,6 +28,8 @@
 ..\output\command.o: ..\user\CMD_GetStateEx.h
 ..\output\command.o: ..\user\data_analy.h
 ..\output\command.o: ..\APP\config.h
+..\output\command.o: ..\user\AT24CXX.h
+..\output\command.o: ..\user\Timer.h
 ..\output\command.o: ..\user\voltage.h
 ..\output\command.o: ..\user\edm.h
 ..\output\command.o: ..\user\motor.h

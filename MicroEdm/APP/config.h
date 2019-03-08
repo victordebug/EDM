@@ -1,6 +1,8 @@
 #ifndef CONFIG_H_20190115
 #define CONFIG_H_20190115
 
+
+#include "AT24CXX.h"
 /*********************************************************************
 * 版权所有 (C)2018, 杭州数腾科技有限公司
 * 
@@ -21,14 +23,42 @@
 #endif 
 
 
-/*固件版本信息*/
-#define FIRMWARE_VERSION                            V0.1
-
+/*状态灯*/
 #define SYSTEM_IS_RUN                               (0x01<<0) //系统正常运行（待机）状态
 #define SYSTEM_IS_ERROR                             (0x01<<1) //系统故障
 #define SYSTEM_IS_WORK                              (0x01<<2) //系统工作状态
 
 #define SIZE_U32_DATA                                sizeof(u32)
+
+
+
+/*参数版本信息*/
+#define PARA_VERSION    PARA_VERSION_V001
+#define MAX_DATA_BYTE   AT24CXX_BYTE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif
 

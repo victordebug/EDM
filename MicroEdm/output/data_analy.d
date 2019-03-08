@@ -20,11 +20,13 @@
 ..\output\data_analy.o: ..\lib\FWLIB\inc\stm32f10x_tim.h
 ..\output\data_analy.o: ..\lib\FWLIB\inc\misc.h
 ..\output\data_analy.o: ..\APP\config.h
+..\output\data_analy.o: ..\user\AT24CXX.h
+..\output\data_analy.o: ..\user\stdtypes.h
+..\output\data_analy.o: ..\dirver\gpio.h
+..\output\data_analy.o: ..\user\Timer.h
 ..\output\data_analy.o: ..\user\Command.h
 ..\output\data_analy.o: ..\user\cmd.h
 ..\output\data_analy.o: ..\user\Frame.h
 ..\output\data_analy.o: ..\dirver\UART.h
-..\output\data_analy.o: ..\dirver\GPIO.h
-..\output\data_analy.o: ..\user\stdtypes.h
 ..\output\data_analy.o: ..\user\motor.h
 ..\output\data_analy.o: ..\user\edm.h

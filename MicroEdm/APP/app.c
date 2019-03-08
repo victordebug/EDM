@@ -13,13 +13,14 @@
 #include "edm.h"
 #include "data_analy.h"
 #include "i2c.h"
+#include "AT24CXX.h"
 
 
 
 
-OS_STK led_task_stk[LED_TASK_STK_SIZE]; //定义栈
-OS_STK main_task_stk[MAIN_TASK_STK_SIZE]; //定义栈
-
+static OS_STK led_task_stk[LED_TASK_STK_SIZE]; //定义栈
+static OS_STK main_task_stk[MAIN_TASK_STK_SIZE]; //定义栈
+static OS_STK stat_task_stk[STAT_TASK_STK_SIZE];
 
 
 U32 g_MS = 0;
@@ -79,6 +80,14 @@ void Task_Comm(void * pArg)
 	{
 		 printf("创建Task_Main任务失败\r\n");
 	}
+/*
+	ret = OSTaskCreate(Task_UpdataStat,(void *)0,
+			&stat_task_stk[STAT_TASK_STK_SIZE - 1], STAT_TASK_PRIO);
+	if (ret != 0)
+	{
+		 printf("创建Task_UpdataStat任务失败\r\n");
+	}
+*/
 
 	Uart_Thread();
 }
@@ -87,21 +96,21 @@ void Task_Comm(void * pArg)
 
 void Task_Main(void * pArg)
 {
-/*
-	Z_MOTOR_MOVETO_ANALYSIS z_motor_analy;
+
+	/*Z_MOTOR_MOVETO_ANALYSIS z_motor_analy;
 	z_motor_analy.ID = 0;
 	z_motor_analy.Dir = ANALY_Z_MOTOR_DIR_MIN;
 	z_motor_analy.Unit = 0;
-	z_motor_analy.A    = 1;
-	z_motor_analy.V    = 5;
-	z_motor_analy.Pos  = 350;
+	z_motor_analy.A.u32    = 1;
+	z_motor_analy.V.u32    = 5;
+	z_motor_analy.Pos.u32  = 350;
 
-	z_motor_moveTo(&z_motor_analy);
-*/
+	z_motor_moveTo(&z_motor_analy);*/
+
 	
 	while (1)
 	{
-	  /*  printf("curMp:\r\n");
+	 /*   printf("curMp:\r\n");
 		printf("MpL:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_MP_L));
 		printf("MpH:0x%0x\r\n", fpga_read(ADDR_Z0_CUR_MP_H));
 
@@ -113,20 +122,39 @@ void Task_Main(void * pArg)
 
 
 		
-		u32 write_data[3] = {0x12345678, 0xDDCCBBAA, 0xABCDDCBA};
-		u32 read_data[3] = {0};
+		U32 write_data[3] = {0x12345678, 0x98765432, 0x65498732};
+		U32 read_data[3] = {0};
 		int i=0;
 		u8 read_u8 = 0;		
 		
-		EEPROM_24LC16B_WriteBuf(0x00, write_data, 3);
-		OSTimeDlyHMSM(0,0,1,0);
-		EEPROM_24LC16B_ReadBuf(0x00, read_data, 3);
-		OSTimeDlyHMSM(0,0,1,0);
+		//EEPROM_24LC16B_WriteBuf(0x00, write_data, 3);
+		//OSTimeDlyHMSM(0,0,1,0);
+		//EEPROM_24LC16B_ReadBuf(0x00, read_data, 3);
+		//OSTimeDlyHMSM(0,0,1,0);
 		
+
+		AT24CXX_Write(0x00, 12, (U32 *)write_data);
+		OSTimeDlyHMSM(0,0,1,0);
+		AT24CXX_Read(0x00, 12, (U32 *)read_data);
+		OSTimeDlyHMSM(0,0,1,0);
+	
 	}
 }
 
-void Task_Led(void * pArg)
+
+/*实时更新系统的所有状态*/
+void Task_UpdataStat(void *pArg)
+{
+	while(1)
+	{
+		OSTimeDlyHMSM(0,0,1,0);
+	}
+	
+}
+
+
+
+void Task_Led(void *pArg)
 {
 	
 	while (1)

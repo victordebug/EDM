@@ -740,6 +740,31 @@
               <FileType>1</FileType>
               <FilePath>..\user\myString.c</FilePath>
             </File>
+            <File>
+              <FileName>AT24CXX.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\AT24CXX.c</FilePath>
+            </File>
+            <File>
+              <FileName>CMD_ParaFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\CMD_ParaFile.c</FilePath>
+            </File>
+            <File>
+              <FileName>fileSystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\fileSystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>ParaInfo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\ParaInfo.c</FilePath>
+            </File>
+            <File>
+              <FileName>ParaInfo_V110.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\ParaInfo_V110.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
